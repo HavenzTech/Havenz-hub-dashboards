@@ -3,23 +3,12 @@
 import Image from "next/image";
 import { classNames } from "@/lib/utils";
 import { useCurrentTime } from "@/hooks/useCurrentTime";
-import { useWeather } from "@/hooks/useWeather";
 
 interface HeaderProps {
   companyName: string;
   companyUrl?: string;
   logoSrc?: string;
   className?: string;
-}
-
-// Convert Celsius to Fahrenheit
-function celsiusToFahrenheit(celsius: number): number {
-  return Math.round((celsius * 9) / 5 + 32);
-}
-
-// Convert Fahrenheit to Celsius
-function fahrenheitToCelsius(fahrenheit: number): number {
-  return Math.round(((fahrenheit - 32) * 5) / 9);
 }
 
 export function Header({
@@ -32,21 +21,6 @@ export function Header({
   const displayUrl = companyUrl?.replace(/^https?:\/\//, "").toUpperCase();
 
   const { formattedDate, formattedTime } = useCurrentTime();
-  const { weather, isLoading } = useWeather();
-
-  // Calculate both Celsius and Fahrenheit
-  const tempC =
-    weather?.unit === "C"
-      ? weather.temp
-      : weather
-      ? fahrenheitToCelsius(weather.temp)
-      : null;
-  const tempF =
-    weather?.unit === "F"
-      ? weather.temp
-      : weather
-      ? celsiusToFahrenheit(weather.temp)
-      : null;
 
   return (
     <header className={classNames("w-full flex flex-col", className)}>
@@ -94,29 +68,14 @@ export function Header({
             </span>
           </div>
 
-          {/* Time and Temperature side by side */}
-          <div className="flex items-start gap-8">
-            {/* Current Time */}
-            <div className="flex flex-col items-end">
-              <span className="text-[10px] font-medium tracking-widest text-text-muted uppercase mb-0.5">
-                Current Time
-              </span>
-              <span className="text-lg font-bold text-brand-accent font-mono tracking-wide">
-                {formattedTime}
-              </span>
-            </div>
-
-            {/* Current Temperature */}
-            <div className="flex flex-col items-end">
-              <span className="text-[10px] font-medium tracking-widest text-text-muted uppercase mb-0.5">
-                Current Temperature
-              </span>
-              <span className="text-lg font-bold text-brand-accent tracking-wide">
-                {isLoading || !weather
-                  ? "--°c / --°f"
-                  : `${tempC}°c / ${tempF}°f`}
-              </span>
-            </div>
+          {/* Current Time */}
+          <div className="flex flex-col items-end">
+            <span className="text-[10px] font-medium tracking-widest text-text-muted uppercase mb-0.5">
+              Current Time
+            </span>
+            <span className="text-lg font-bold text-brand-accent font-mono tracking-wide">
+              {formattedTime}
+            </span>
           </div>
         </div>
       </div>

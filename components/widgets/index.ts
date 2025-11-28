@@ -1,5 +1,4 @@
 export { DateTimeWidget } from "./DateTimeWidget";
-export { TemperatureWidget } from "./TemperatureWidget";
 export { PersonalInfo } from "./PersonalInfo";
 export { ProfileSection } from "./ProfileSection";
 export { ProjectCard } from "./ProjectCard";
