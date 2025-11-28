@@ -26,7 +26,6 @@ export const LAYOUT_HEIGHTS = {
 // Refresh Intervals (milliseconds)
 export const REFRESH_INTERVALS = {
   clock: 1000,           // 1 second
-  weather: 300000,       // 5 minutes
   linkedIn: 10000,       // 10 seconds (carousel rotation)
   projects: 60000,       // 1 minute
 } as const;

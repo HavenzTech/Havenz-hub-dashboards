@@ -1,6 +1,5 @@
 export * from "./project";
 export * from "./linkedin";
-export * from "./weather";
 
 // Personal Info types
 export interface PersonalDetail {
