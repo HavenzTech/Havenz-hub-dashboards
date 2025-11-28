@@ -11,6 +11,14 @@ interface HeaderProps {
   className?: string;
 }
 
+// Hardcoded weather data - replace with API later
+const WEATHER = {
+  tempC: -5,
+  tempF: 23,
+  condition: "Clear",
+  location: "Calgary",
+};
+
 export function Header({
   companyName,
   companyUrl,
@@ -68,14 +76,27 @@ export function Header({
             </span>
           </div>
 
-          {/* Current Time */}
-          <div className="flex flex-col items-end">
-            <span className="text-[10px] font-medium tracking-widest text-text-muted uppercase mb-0.5">
-              Current Time
-            </span>
-            <span className="text-lg font-bold text-brand-accent font-mono tracking-wide">
-              {formattedTime}
-            </span>
+          {/* Time and Temperature side by side */}
+          <div className="flex items-start gap-8">
+            {/* Current Time */}
+            <div className="flex flex-col items-end">
+              <span className="text-[10px] font-medium tracking-widest text-text-muted uppercase mb-0.5">
+                Current Time
+              </span>
+              <span className="text-lg font-bold text-brand-accent font-mono tracking-wide">
+                {formattedTime}
+              </span>
+            </div>
+
+            {/* Current Temperature */}
+            <div className="flex flex-col items-end">
+              <span className="text-[10px] font-medium tracking-widest text-text-muted uppercase mb-0.5">
+                Current Temperature
+              </span>
+              <span className="text-lg font-bold text-brand-accent tracking-wide">
+                {WEATHER.tempC}°c / {WEATHER.tempF}°f
+              </span>
+            </div>
           </div>
         </div>
       </div>

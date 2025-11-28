@@ -1,7 +1,14 @@
+// Entity types
+export * from "./user";
 export * from "./project";
+export * from "./department";
+export * from "./company";
 export * from "./linkedin";
 
-// Personal Info types
+// API types
+export * from "./api";
+
+// UI/Component types
 export interface PersonalDetail {
   label: string;
   value: string;
@@ -16,7 +23,6 @@ export interface PersonalInfo {
   avatarSrc?: string;
 }
 
-// Header types
 export interface HeaderProps {
   companyName: string;
   companyUrl?: string;
