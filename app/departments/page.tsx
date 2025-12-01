@@ -5,7 +5,7 @@ import { Container } from "@/components/layout/Container";
 import { SectionTitle } from "@/components/ui/SectionTitle";
 import { COMPANY_NAME, COMPANY_LOGO, COMPANY_URL } from "@/lib/constants";
 
-export default function HeatPlantPage() {
+export default function DepartmentsPage() {
   return (
     <Container>
       <Header
@@ -15,8 +15,8 @@ export default function HeatPlantPage() {
         className="mb-4"
       />
       <div className="flex flex-col flex-1 gap-6 overflow-hidden">
-        <SectionTitle>Heat Plant</SectionTitle>
-        {/* Add heat plant content here */}
+        <SectionTitle>Departments</SectionTitle>
+        {/* Add departments content here */}
       </div>
     </Container>
   );
