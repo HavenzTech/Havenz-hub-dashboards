@@ -6,110 +6,48 @@ import { SectionTitle } from "@/components/ui/SectionTitle";
 import { RotatingDepartmentCard } from "@/components/widgets/RotatingDepartmentCard";
 import { BlurFade } from "@/components/ui/BlurFade";
 import { COMPANY_NAME, COMPANY_LOGO, COMPANY_URL } from "@/lib/constants";
+import { getDepartmentsByCompanyId } from "@/lib/data/departments";
 
-// Agritech Haven departments
-const agritechDepartments = [
-  {
-    name: "Operations",
-    status: "Active" as const,
-    ledBy: "John Davidson",
-    employees: 11,
-    budget: "$250K",
-    activeProjects: 3,
-  },
-  {
-    name: "Engineering",
-    status: "Active" as const,
-    ledBy: "Sarah Kim",
-    employees: 5,
-    budget: "$180K",
-    activeProjects: 2,
-  },
-  {
-    name: "Administration",
-    status: "Active" as const,
-    ledBy: "Lisa Chen",
-    employees: 3,
-    budget: "$80K",
-    activeProjects: 1,
-  },
-];
+// Get departments by company
+const agritechDepartments = getDepartmentsByCompanyId("agritech-haven").map((d) => ({
+  id: d.id,
+  name: d.name,
+  status: d.status,
+  ledBy: d.ledBy,
+  employees: d.employees,
+  budget: d.budget,
+  activeProjects: d.activeProjects,
+}));
 
-// Energy Haven departments
-const energyHavenDepartments = [
-  {
-    name: "Production",
-    status: "Active" as const,
-    ledBy: "Mike Reynolds",
-    employees: 45,
-    budget: "$500K",
-    activeProjects: 5,
-  },
-  {
-    name: "Maintenance",
-    status: "Active" as const,
-    ledBy: "Tom Harris",
-    employees: 12,
-    budget: "$220K",
-    activeProjects: 4,
-  },
-  {
-    name: "Legal & Compliance",
-    status: "Active" as const,
-    ledBy: "Emma Wright",
-    employees: 2,
-    budget: "$150K",
-    activeProjects: 1,
-  },
-];
+const energyHavenDepartments = getDepartmentsByCompanyId("energy-haven").map((d) => ({
+  id: d.id,
+  name: d.name,
+  status: d.status,
+  ledBy: d.ledBy,
+  employees: d.employees,
+  budget: d.budget,
+  activeProjects: d.activeProjects,
+}));
 
-// RISE Basketball departments
-const riseDepartments = [
-  {
-    name: "Coaching",
-    status: "Active" as const,
-    ledBy: "Chris Lopez",
-    employees: 8,
-    budget: "$120K",
-    activeProjects: 2,
-  },
-  {
-    name: "Player Development",
-    status: "Active" as const,
-    ledBy: "Marcus Johnson",
-    employees: 6,
-    budget: "$95K",
-    activeProjects: 3,
-  },
-  {
-    name: "Operations",
-    status: "Active" as const,
-    ledBy: "Diana Ross",
-    employees: 4,
-    budget: "$60K",
-    activeProjects: 1,
-  },
-];
+const riseDepartments = getDepartmentsByCompanyId("rise-basketball").map((d) => ({
+  id: d.id,
+  name: d.name,
+  status: d.status,
+  ledBy: d.ledBy,
+  employees: d.employees,
+  budget: d.budget,
+  activeProjects: d.activeProjects,
+}));
 
-// Havenz Tech departments
-const havenzTechDepartments = [
-  {
-    name: "Development",
-    status: "Active" as const,
-    ledBy: "Alex Morgan",
-    employees: 5,
-    budget: "$150K",
-    activeProjects: 4,
-  },
-  {
-    name: "Sales",
-    status: "Active" as const,
-    ledBy: "Jane Park",
-    employees: 3,
-    budget: "$90K",
-    activeProjects: 2,
-  },
-];
+const havenzTechDepartments = getDepartmentsByCompanyId("havenz-tech").map((d) => ({
+  id: d.id,
+  name: d.name,
+  status: d.status,
+  ledBy: d.ledBy,
+  employees: d.employees,
+  budget: d.budget,
+  activeProjects: d.activeProjects,
+}));
 
 export default function DepartmentsPage() {
   // Animation timing configuration (in ms)

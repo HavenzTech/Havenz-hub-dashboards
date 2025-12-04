@@ -1,10 +1,12 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import { classNames } from "@/lib/utils";
 
 interface CompanyCardProps {
   name: string;
+  id?: string;
   logoSrc: string;
   logoScale?: number;
   status: "Active" | "Inactive";
@@ -18,6 +20,7 @@ interface CompanyCardProps {
 
 export function CompanyCard({
   name,
+  id,
   logoSrc,
   logoScale = 1,
   status,
@@ -28,10 +31,11 @@ export function CompanyCard({
   founded,
   className,
 }: CompanyCardProps) {
-  return (
+  const content = (
     <div
       className={classNames(
         "flex flex-col items-center gap-4 w-full",
+        id && "cursor-pointer hover:scale-[1.02] transition-transform",
         className
       )}
     >
@@ -100,4 +104,14 @@ export function CompanyCard({
       </div>
     </div>
   );
+
+  if (id) {
+    return (
+      <Link href={`/companies/${id}`}>
+        {content}
+      </Link>
+    );
+  }
+
+  return content;
 }

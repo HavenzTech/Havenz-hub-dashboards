@@ -7,76 +7,18 @@ import { PropertyCard } from "@/components/widgets/PropertyCard";
 import { RotatingPropertyCard } from "@/components/widgets/RotatingPropertyCard";
 import { BlurFade } from "@/components/ui/BlurFade";
 import { COMPANY_NAME, COMPANY_LOGO, COMPANY_URL } from "@/lib/constants";
+import { getPropertyById, properties } from "@/lib/data/properties";
 
 // Fixed position properties
-const heatPowerPlant = {
-  name: "Heat & Power Plant",
-  companyName: "Agritech Haven LP",
-  companyLogo: "/ahi.png",
-  companyLogoScale: 0.8,
-  status: "Operational" as const,
-  type: "Power Plant",
-  location: "Red Deer, AB",
-  size: "15,000 sqft",
-  acquired: 2018,
-};
-
-const headquartersOffice = {
-  name: "Corporate Headquarters",
-  companyName: "Agritech Haven LP",
-  companyLogo: "/ahi.png",
-  companyLogoScale: 0.8,
-  status: "Operational" as const,
-  type: "Office",
-  location: "Red Deer, AB",
-  size: "8,500 sqft",
-  acquired: 2013,
-};
-
-const trainingFacility = {
-  name: "RISE Training Center",
-  companyName: "RISE Basketball",
-  companyLogo: "/rise.png",
-  status: "Operational" as const,
-  type: "Sports Facility",
-  location: "Calgary, AB",
-  size: "25,000 sqft",
-  acquired: 2015,
-};
+const heatPowerPlant = getPropertyById("heat-power-plant")!;
+const headquartersOffice = getPropertyById("corporate-headquarters")!;
+const trainingFacility = getPropertyById("rise-training-center")!;
 
 // Rotating properties (bottom-right)
 const rotatingProperties = [
-  {
-    name: "Energy Hub Facility",
-    companyName: "Energy Haven",
-    companyLogo: "/energyhaven.png",
-    status: "Operational" as const,
-    type: "Industrial",
-    location: "Calgary, AB",
-    size: "32,000 sqft",
-    acquired: 2019,
-  },
-  {
-    name: "Tech Innovation Lab",
-    companyName: "Havenz Tech",
-    companyLogo: "/havenztech.png",
-    status: "Operational" as const,
-    type: "Office/Lab",
-    location: "Calgary, AB",
-    size: "4,200 sqft",
-    acquired: 2025,
-  },
-  {
-    name: "Agricultural Warehouse",
-    companyName: "Agritech Haven LP",
-    companyLogo: "/ahi.png",
-    companyLogoScale: 0.8,
-    status: "Under Maintenance" as const,
-    type: "Warehouse",
-    location: "Red Deer, AB",
-    size: "45,000 sqft",
-    acquired: 2016,
-  },
+  getPropertyById("energy-hub-facility")!,
+  getPropertyById("tech-innovation-lab")!,
+  getPropertyById("agricultural-warehouse")!,
 ];
 
 export default function PropertiesPage() {

@@ -2,9 +2,11 @@
 
 import { useState, useEffect } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import { classNames } from "@/lib/utils";
 
 interface Property {
+  id?: string;
   name: string;
   companyName: string;
   companyLogo: string;
@@ -62,72 +64,129 @@ export function RotatingPropertyCard({
       )}
     >
       {/* Content with fade animation */}
-      <div
-        className={classNames(
-          "flex flex-col items-center gap-3 w-full transition-all duration-300 ease-in-out",
-          isAnimating ? "opacity-0 blur-sm" : "opacity-100 blur-0"
-        )}
-      >
-        {/* Header: Company Logo + Property Name */}
-        <div className="flex items-center gap-4">
-          <div className="relative w-14 h-14 rounded-lg overflow-hidden shrink-0">
-            <Image
-              src={currentProperty.companyLogo}
-              alt={currentProperty.companyName}
-              fill
-              className="object-contain"
-              style={{ transform: `scale(${currentProperty.companyLogoScale || 1})` }}
-            />
-          </div>
-          <div className="flex flex-col">
-            <span className="text-xl font-semibold text-text-primary">
-              {currentProperty.name}
-            </span>
-            <span className="text-sm text-text-secondary">{currentProperty.companyName}</span>
-          </div>
-        </div>
+      {currentProperty.id ? (
+        <Link href={`/properties/${currentProperty.id}`} className="w-full">
+          <div
+            className={classNames(
+              "flex flex-col items-center gap-3 w-full transition-all duration-300 ease-in-out cursor-pointer hover:scale-[1.01]",
+              isAnimating ? "opacity-0 blur-sm" : "opacity-100 blur-0"
+            )}
+          >
+            {/* Header: Company Logo + Property Name */}
+            <div className="flex items-center gap-4">
+              <div className="relative w-14 h-14 rounded-lg overflow-hidden shrink-0">
+                <Image
+                  src={currentProperty.companyLogo}
+                  alt={currentProperty.companyName}
+                  fill
+                  className="object-contain"
+                  style={{ transform: `scale(${currentProperty.companyLogoScale || 1})` }}
+                />
+              </div>
+              <div className="flex flex-col">
+                <span className="text-xl font-semibold text-text-primary">
+                  {currentProperty.name}
+                </span>
+                <span className="text-sm text-text-secondary">{currentProperty.companyName}</span>
+              </div>
+            </div>
 
-        {/* Divider */}
-        <div className="w-full h-px bg-white/10" />
+            {/* Divider */}
+            <div className="w-full h-px bg-white/10" />
 
-        {/* Status Badge */}
+            {/* Status Badge */}
+            <div
+              className={classNames(
+                "px-3.5 py-1 rounded-full text-sm font-medium",
+                statusStyles[currentProperty.status]
+              )}
+            >
+              <span className="mr-1.5">●</span>
+              {currentProperty.status}
+            </div>
+
+            {/* Info Grid */}
+            <div className="grid grid-cols-2 gap-x-8 gap-y-3 text-center">
+              <div className="flex flex-col">
+                <span className="text-xs text-text-muted uppercase tracking-wide">Type</span>
+                <span className="text-xl font-semibold text-text-primary">{currentProperty.type}</span>
+              </div>
+              <div className="flex flex-col">
+                <span className="text-xs text-text-muted uppercase tracking-wide">Location</span>
+                <span className="text-xl font-semibold text-text-primary">{currentProperty.location}</span>
+              </div>
+              <div className="flex flex-col">
+                <span className="text-xs text-text-muted uppercase tracking-wide">Size</span>
+                <span className="text-xl font-semibold text-text-primary">{currentProperty.size}</span>
+              </div>
+              <div className="flex flex-col">
+                <span className="text-xs text-text-muted uppercase tracking-wide">Acquired</span>
+                <span className="text-xl font-semibold text-text-primary">{currentProperty.acquired}</span>
+              </div>
+            </div>
+          </div>
+        </Link>
+      ) : (
         <div
           className={classNames(
-            "px-3.5 py-1 rounded-full text-sm font-medium",
-            statusStyles[currentProperty.status]
+            "flex flex-col items-center gap-3 w-full transition-all duration-300 ease-in-out",
+            isAnimating ? "opacity-0 blur-sm" : "opacity-100 blur-0"
           )}
         >
-          <span className="mr-1.5">●</span>
-          {currentProperty.status}
+          {/* Header: Company Logo + Property Name */}
+          <div className="flex items-center gap-4">
+            <div className="relative w-14 h-14 rounded-lg overflow-hidden shrink-0">
+              <Image
+                src={currentProperty.companyLogo}
+                alt={currentProperty.companyName}
+                fill
+                className="object-contain"
+                style={{ transform: `scale(${currentProperty.companyLogoScale || 1})` }}
+              />
+            </div>
+            <div className="flex flex-col">
+              <span className="text-xl font-semibold text-text-primary">
+                {currentProperty.name}
+              </span>
+              <span className="text-sm text-text-secondary">{currentProperty.companyName}</span>
+            </div>
+          </div>
+
+          {/* Divider */}
+          <div className="w-full h-px bg-white/10" />
+
+          {/* Status Badge */}
+          <div
+            className={classNames(
+              "px-3.5 py-1 rounded-full text-sm font-medium",
+              statusStyles[currentProperty.status]
+            )}
+          >
+            <span className="mr-1.5">●</span>
+            {currentProperty.status}
+          </div>
+
+          {/* Info Grid */}
+          <div className="grid grid-cols-2 gap-x-8 gap-y-3 text-center">
+            <div className="flex flex-col">
+              <span className="text-xs text-text-muted uppercase tracking-wide">Type</span>
+              <span className="text-xl font-semibold text-text-primary">{currentProperty.type}</span>
+            </div>
+            <div className="flex flex-col">
+              <span className="text-xs text-text-muted uppercase tracking-wide">Location</span>
+              <span className="text-xl font-semibold text-text-primary">{currentProperty.location}</span>
+            </div>
+            <div className="flex flex-col">
+              <span className="text-xs text-text-muted uppercase tracking-wide">Size</span>
+              <span className="text-xl font-semibold text-text-primary">{currentProperty.size}</span>
+            </div>
+            <div className="flex flex-col">
+              <span className="text-xs text-text-muted uppercase tracking-wide">Acquired</span>
+              <span className="text-xl font-semibold text-text-primary">{currentProperty.acquired}</span>
+            </div>
+          </div>
         </div>
-
-        {/* Info Grid */}
-        <div className="grid grid-cols-2 gap-x-8 gap-y-3 text-center">
-          {/* Type */}
-          <div className="flex flex-col">
-            <span className="text-xs text-text-muted uppercase tracking-wide">Type</span>
-            <span className="text-xl font-semibold text-text-primary">{currentProperty.type}</span>
-          </div>
-
-          {/* Location */}
-          <div className="flex flex-col">
-            <span className="text-xs text-text-muted uppercase tracking-wide">Location</span>
-            <span className="text-xl font-semibold text-text-primary">{currentProperty.location}</span>
-          </div>
-
-          {/* Size */}
-          <div className="flex flex-col">
-            <span className="text-xs text-text-muted uppercase tracking-wide">Size</span>
-            <span className="text-xl font-semibold text-text-primary">{currentProperty.size}</span>
-          </div>
-
-          {/* Acquired */}
-          <div className="flex flex-col">
-            <span className="text-xs text-text-muted uppercase tracking-wide">Acquired</span>
-            <span className="text-xl font-semibold text-text-primary">{currentProperty.acquired}</span>
-          </div>
-        </div>
-      </div>
+      )}
 
       {/* Pagination dots */}
       {properties.length > 1 && (
