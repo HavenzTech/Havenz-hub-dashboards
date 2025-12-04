@@ -1,9 +1,11 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import { classNames } from "@/lib/utils";
 
 interface PropertyCardProps {
+  id?: string;
   name: string;
   companyName: string;
   companyLogo: string;
@@ -17,6 +19,7 @@ interface PropertyCardProps {
 }
 
 export function PropertyCard({
+  id,
   name,
   companyName,
   companyLogo,
@@ -34,13 +37,8 @@ export function PropertyCard({
     Inactive: "bg-white/10 text-text-muted",
   };
 
-  return (
-    <div
-      className={classNames(
-        "flex flex-col items-center gap-3 w-full",
-        className
-      )}
-    >
+  const content = (
+    <>
       {/* Header: Company Logo + Property Name */}
       <div className="flex items-center gap-4">
         <div className="relative w-14 h-14 rounded-lg overflow-hidden shrink-0">
@@ -100,6 +98,20 @@ export function PropertyCard({
           <span className="text-xl font-semibold text-text-primary">{acquired}</span>
         </div>
       </div>
+    </>
+  );
+
+  if (id) {
+    return (
+      <Link href={`/properties/${id}`} className={classNames("flex flex-col items-center gap-3 w-full cursor-pointer hover:scale-[1.02] transition-transform", className)}>
+        {content}
+      </Link>
+    );
+  }
+
+  return (
+    <div className={classNames("flex flex-col items-center gap-3 w-full", className)}>
+      {content}
     </div>
   );
 }

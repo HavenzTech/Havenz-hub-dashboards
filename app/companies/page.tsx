@@ -7,77 +7,17 @@ import { CompanyCard } from "@/components/widgets/CompanyCard";
 import { RotatingCompanyCard } from "@/components/widgets/RotatingCompanyCard";
 import { BlurFade } from "@/components/ui/BlurFade";
 import { COMPANY_NAME, COMPANY_LOGO, COMPANY_URL } from "@/lib/constants";
+import { companies } from "@/lib/data/companies";
 
-// Fixed position companies
-const agritechHaven = {
-  name: "Agritech Haven LP",
-  logoSrc: "/ahi.png",
-  logoScale: 0.8,
-  status: "Active" as const,
-  revenue: "$4.2M",
-  location: "Red Deer, AB",
-  industry: "Agriculture",
-  employees: 28,
-  founded: 2013,
-};
-
-const havenzTech = {
-  name: "Havenz Tech",
-  logoSrc: "/havenztech.png",
-  status: "Active" as const,
-  revenue: "$1.8M",
-  location: "Calgary, AB",
-  industry: "Technology",
-  employees: 5,
-  founded: 2025,
-};
-
-const riseBasketball = {
-  name: "RISE Basketball",
-  logoSrc: "/rise.png",
-  status: "Active" as const,
-  revenue: "$850K",
-  location: "Calgary, AB",
-  industry: "Sports",
-  employees: 62,
-  founded: 2012,
-};
+// Get companies by id for fixed positions
+const agritechHaven = companies.find((c) => c.id === "agritech-haven")!;
+const havenzTech = companies.find((c) => c.id === "havenz-tech")!;
+const riseBasketball = companies.find((c) => c.id === "rise-basketball")!;
 
 // Rotating companies (bottom-right)
-const rotatingCompanies = [
-  {
-    name: "Energy Haven",
-    logoSrc: "/energyhaven.png",
-    status: "Active" as const,
-    revenue: "$12.5M",
-    location: "Calgary, AB",
-    industry: "Energy",
-    employees: 45,
-    founded: 2016,
-  },
-  {
-    name: "HavenSure",
-    logoSrc: "/havensure.png",
-    logoScale: 1.4,
-    status: "Active" as const,
-    revenue: "$3.2M",
-    location: "Calgary, AB",
-    industry: "Insurance",
-    employees: 18,
-    founded: 2025,
-  },
-  {
-    name: "Ledgion",
-    logoSrc: "/ledgion.png",
-    logoScale: 1.2,
-    status: "Active" as const,
-    revenue: "$950K",
-    location: "Calgary, AB",
-    industry: "Finance",
-    employees: 6,
-    founded: 2025,
-  },
-];
+const rotatingCompanies = companies.filter((c) =>
+  ["energy-haven", "havensure", "ledgion"].includes(c.id)
+);
 
 export default function CompaniesPage() {
   // Animation timing configuration (in ms)
@@ -107,21 +47,54 @@ export default function CompaniesPage() {
           {/* Top Left - Agritech Haven */}
           <div className="flex flex-col items-center">
             <BlurFade delay={ANIMATION_DELAYS.topLeft} duration={600} yOffset={16}>
-              <CompanyCard {...agritechHaven} />
+              <CompanyCard
+                id={agritechHaven.id}
+                name={agritechHaven.name}
+                logoSrc={agritechHaven.logoSrc}
+                logoScale={agritechHaven.logoScale}
+                status={agritechHaven.status}
+                revenue={agritechHaven.revenue}
+                location={agritechHaven.location}
+                industry={agritechHaven.industry}
+                employees={agritechHaven.employees}
+                founded={agritechHaven.founded}
+              />
             </BlurFade>
           </div>
 
           {/* Top Right - Havenz Tech */}
           <div className="flex flex-col items-center">
             <BlurFade delay={ANIMATION_DELAYS.topRight} duration={600} yOffset={16}>
-              <CompanyCard {...havenzTech} />
+              <CompanyCard
+                id={havenzTech.id}
+                name={havenzTech.name}
+                logoSrc={havenzTech.logoSrc}
+                logoScale={havenzTech.logoScale}
+                status={havenzTech.status}
+                revenue={havenzTech.revenue}
+                location={havenzTech.location}
+                industry={havenzTech.industry}
+                employees={havenzTech.employees}
+                founded={havenzTech.founded}
+              />
             </BlurFade>
           </div>
 
           {/* Bottom Left - RISE Basketball */}
           <div className="flex flex-col items-center">
             <BlurFade delay={ANIMATION_DELAYS.bottomLeft} duration={600} yOffset={16}>
-              <CompanyCard {...riseBasketball} />
+              <CompanyCard
+                id={riseBasketball.id}
+                name={riseBasketball.name}
+                logoSrc={riseBasketball.logoSrc}
+                logoScale={riseBasketball.logoScale}
+                status={riseBasketball.status}
+                revenue={riseBasketball.revenue}
+                location={riseBasketball.location}
+                industry={riseBasketball.industry}
+                employees={riseBasketball.employees}
+                founded={riseBasketball.founded}
+              />
             </BlurFade>
           </div>
 

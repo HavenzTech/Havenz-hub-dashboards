@@ -2,9 +2,11 @@
 
 import { useState, useEffect } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import { classNames } from "@/lib/utils";
 
 interface Project {
+  id?: string;
   name: string;
   companyName: string;
   companyLogo: string;
@@ -77,12 +79,14 @@ export function RotatingProjectCard({
       )}
     >
       {/* Content with fade animation */}
-      <div
-        className={classNames(
-          "flex flex-col items-center gap-3 w-full transition-all duration-300 ease-in-out",
-          isAnimating ? "opacity-0 blur-sm" : "opacity-100 blur-0"
-        )}
-      >
+      {currentProject.id ? (
+        <Link href={`/projects/${currentProject.id}`} className="w-full">
+          <div
+            className={classNames(
+              "flex flex-col items-center gap-3 w-full transition-all duration-300 ease-in-out cursor-pointer hover:scale-[1.01]",
+              isAnimating ? "opacity-0 blur-sm" : "opacity-100 blur-0"
+            )}
+          >
         {/* Top Section: Project Name + Company + Status */}
         <div className="flex items-center justify-between w-full">
           {/* Left: Project Name */}
@@ -163,7 +167,86 @@ export function RotatingProjectCard({
             <span className="text-sm font-semibold text-text-primary">{currentProject.department}</span>
           </div>
         </div>
-      </div>
+          </div>
+        </Link>
+      ) : (
+        <div
+          className={classNames(
+            "flex flex-col items-center gap-3 w-full transition-all duration-300 ease-in-out",
+            isAnimating ? "opacity-0 blur-sm" : "opacity-100 blur-0"
+          )}
+        >
+          {/* Top Section: Project Name + Company + Status */}
+          <div className="flex items-center justify-between w-full">
+            <h3 className="text-xl font-bold text-text-primary">
+              {currentProject.name}
+            </h3>
+            <div className="flex items-center gap-2">
+              <div className="relative w-10 h-10 rounded-lg overflow-hidden shrink-0">
+                <Image
+                  src={currentProject.companyLogo}
+                  alt={`${currentProject.companyName} logo`}
+                  fill
+                  className="object-contain"
+                  style={{ transform: `scale(${currentProject.companyLogoScale || 1})` }}
+                />
+              </div>
+              <span className="text-base text-text-secondary">
+                {currentProject.companyName}
+              </span>
+            </div>
+            <div
+              className={classNames(
+                "px-3 py-0.5 rounded-full text-xs font-medium",
+                getStatusColor(currentProject.status)
+              )}
+            >
+              <span className="mr-1">●</span>
+              {currentProject.status}
+            </div>
+          </div>
+          <div className="w-full h-px bg-white/10" />
+          <div className="w-full">
+            <div className="flex justify-between text-xs text-text-muted mb-1">
+              <span>Progress</span>
+              <span>{currentProject.progress}%</span>
+            </div>
+            <div className="w-full h-1.5 bg-white/10 rounded-full overflow-hidden">
+              <div
+                className={classNames(
+                  "h-full rounded-full transition-all duration-500",
+                  currentProject.progress === 100
+                    ? "bg-status-success"
+                    : "bg-brand-accent"
+                )}
+                style={{ width: `${currentProject.progress}%` }}
+              />
+            </div>
+          </div>
+          <div className="grid grid-cols-5 gap-x-6 text-center w-full">
+            <div className="flex flex-col">
+              <span className="text-xs text-text-muted uppercase tracking-wide">Start</span>
+              <span className="text-sm font-semibold text-text-primary">{currentProject.startDate}</span>
+            </div>
+            <div className="flex flex-col">
+              <span className="text-xs text-text-muted uppercase tracking-wide">End</span>
+              <span className="text-sm font-semibold text-text-primary">{currentProject.endDate}</span>
+            </div>
+            <div className="flex flex-col">
+              <span className="text-xs text-text-muted uppercase tracking-wide">Lead</span>
+              <span className="text-sm font-semibold text-text-primary">{currentProject.projectLead}</span>
+            </div>
+            <div className="flex flex-col">
+              <span className="text-xs text-text-muted uppercase tracking-wide">Budget</span>
+              <span className="text-sm font-semibold text-text-primary">{currentProject.budget}</span>
+            </div>
+            <div className="flex flex-col">
+              <span className="text-xs text-text-muted uppercase tracking-wide">Dept</span>
+              <span className="text-sm font-semibold text-text-primary">{currentProject.department}</span>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Pagination dots */}
       {projects.length > 1 && (

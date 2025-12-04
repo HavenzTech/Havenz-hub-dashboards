@@ -2,9 +2,11 @@
 
 import { useState, useEffect } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import { classNames } from "@/lib/utils";
 
 interface Company {
+  id?: string;
   name: string;
   logoSrc: string;
   logoScale?: number;
@@ -48,22 +50,16 @@ export function RotatingCompanyCard({
 
   if (!currentCompany) return null;
 
-  return (
+  const cardContent = (
     <div
       className={classNames(
-        "flex flex-col items-center gap-4 w-full",
-        className
+        "flex flex-col items-center gap-4 w-full transition-all duration-300 ease-in-out",
+        isAnimating ? "opacity-0 blur-sm" : "opacity-100 blur-0",
+        currentCompany.id && "cursor-pointer hover:scale-[1.02]"
       )}
     >
-      {/* Content with fade animation */}
-      <div
-        className={classNames(
-          "flex flex-col items-center gap-4 w-full transition-all duration-300 ease-in-out",
-          isAnimating ? "opacity-0 blur-sm" : "opacity-100 blur-0"
-        )}
-      >
-        {/* Header: Logo + Name */}
-        <div className="flex items-center gap-4">
+      {/* Header: Logo + Name */}
+      <div className="flex items-center gap-4">
           <div className="relative w-14 h-14 rounded-lg overflow-hidden shrink-0">
             <Image
               src={currentCompany.logoSrc}
@@ -121,11 +117,28 @@ export function RotatingCompanyCard({
           </div>
         </div>
 
-        {/* Founded */}
-        <div className="text-sm text-text-secondary">
-          Est. {currentCompany.founded}
-        </div>
+      {/* Founded */}
+      <div className="text-sm text-text-secondary">
+        Est. {currentCompany.founded}
       </div>
+    </div>
+  );
+
+  return (
+    <div
+      className={classNames(
+        "flex flex-col items-center gap-4 w-full",
+        className
+      )}
+    >
+      {/* Content with fade animation */}
+      {currentCompany.id ? (
+        <Link href={`/companies/${currentCompany.id}`}>
+          {cardContent}
+        </Link>
+      ) : (
+        cardContent
+      )}
 
       {/* Pagination dots */}
       {companies.length > 1 && (
