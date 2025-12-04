@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { classNames } from "@/lib/utils";
 import { BlurText } from "@/components/ui/BlurText";
+import { BlurFade } from "@/components/ui/BlurFade";
 
 interface ProfileSectionProps {
   avatarUrl: string;
@@ -13,6 +14,7 @@ interface ProfileSectionProps {
   contactText?: string;
   onContactClick?: () => void;
   className?: string;
+  baseDelay?: number;
 }
 
 export function ProfileSection({
@@ -24,6 +26,7 @@ export function ProfileSection({
   contactText = "Contact",
   onContactClick,
   className,
+  baseDelay = 0,
 }: ProfileSectionProps) {
   return (
     <div className={className}>
@@ -36,28 +39,30 @@ export function ProfileSection({
           {/* Welcome and Name at top */}
           <div className="text-center">
             <p className="text-2xl text-text-secondary mb-1">
-              <BlurText text="Welcome Back" delay={0} duration={1500} />
+              <BlurText text="Welcome Back" delay={baseDelay} duration={1500} />
             </p>
             <h2 className="text-3xl font-semibold text-text-primary mb-1">
-              <BlurText text={name} delay={500} duration={1500} />
+              <BlurText text={name} delay={baseDelay + 200} duration={1500} />
             </h2>
             <p className="text-2xl font-semibold text-text-secondary">
-              <BlurText text={title} delay={1000} duration={1500} />
+              <BlurText text={title} delay={baseDelay + 400} duration={1500} />
             </p>
           </div>
 
           {/* Avatar - positioned to fill remaining space */}
-          <div className="flex-1 flex items-end justify-center overflow-hidden mt-4">
-            <div className="relative w-full max-w-[280px] aspect-square">
-              <Image
-                src={avatarUrl}
-                alt={name}
-                fill
-                className="object-cover object-top rounded-2xl"
-                priority
-              />
+          <BlurFade delay={baseDelay + 600} duration={800} yOffset={20}>
+            <div className="flex-1 flex items-end justify-center overflow-hidden mt-4">
+              <div className="relative w-full max-w-[280px] aspect-square">
+                <Image
+                  src={avatarUrl}
+                  alt={name}
+                  fill
+                  className="object-cover object-top rounded-2xl"
+                  priority
+                />
+              </div>
             </div>
-          </div>
+          </BlurFade>
         </div>
       </div>
 
