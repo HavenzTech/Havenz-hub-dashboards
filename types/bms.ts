@@ -990,3 +990,8 @@ export interface PaginatedResponse<T> {
   pageSize: number;
   hasMore: boolean;
 }
+
+export interface PaginationParams {
+  page?: number;
+  pageSize?: number;
+}

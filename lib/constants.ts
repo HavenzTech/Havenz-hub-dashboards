@@ -32,6 +32,8 @@ export const REFRESH_INTERVALS = {
 
 // Status Colors mapping
 export const STATUS_COLORS = {
+  planning: "text-status-info",
+  active: "text-status-warning",
   completed: "text-status-success",
   "in-progress": "text-status-warning",
   "on-hold": "text-status-error",
@@ -40,6 +42,8 @@ export const STATUS_COLORS = {
 
 // Status Labels
 export const STATUS_LABELS = {
+  planning: "Planning",
+  active: "Active",
   completed: "Completed",
   "in-progress": "In Progress",
   "on-hold": "On Hold",

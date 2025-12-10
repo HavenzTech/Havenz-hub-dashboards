@@ -17,6 +17,8 @@ const sizeClasses = {
 };
 
 const dotColors = {
+  planning: "bg-status-info",
+  active: "bg-status-warning",
   completed: "bg-status-success",
   "in-progress": "bg-status-warning",
   "on-hold": "bg-status-error",
