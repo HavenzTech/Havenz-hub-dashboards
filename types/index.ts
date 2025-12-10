@@ -1,12 +1,8 @@
-// Entity types
-export * from "./user";
-export * from "./project";
-export * from "./department";
-export * from "./company";
-export * from "./linkedin";
+// BMS types (backend-aligned)
+export * from "./bms";
 
-// API types
-export * from "./api";
+// LinkedIn types
+export * from "./linkedin";
 
 // UI/Component types
 export interface PersonalDetail {
