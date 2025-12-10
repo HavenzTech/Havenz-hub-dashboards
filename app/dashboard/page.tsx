@@ -6,7 +6,8 @@ import { LinkedInFeed } from "@/components/widgets/LinkedInFeed";
 import { CompaniesList } from "@/components/widgets/CompaniesList";
 import { BlurFade } from "@/components/ui/BlurFade";
 import { BlurText } from "@/components/ui/BlurText";
-import type { Project, LinkedInPost } from "@/types";
+import type { LinkedInPost } from "@/types";
+import { projects } from "@/lib/data/projects";
 
 // Profile data
 const profileData = {
@@ -54,41 +55,6 @@ const companies = [
   },
 ];
 
-const mockProjects: Project[] = [
-  {
-    id: "1",
-    name: "Heat Plant Monitoring System",
-    startDate: "Jan 2024",
-    endDate: "Mar 2024",
-    status: "in-progress",
-    admin: "Sunny S",
-    resource: "Team Alpha",
-    progress: 65,
-    hoursLogged: "245 hrs",
-  },
-  {
-    id: "2",
-    name: "Dashboard Analytics Platform",
-    startDate: "Nov 2023",
-    endDate: "Feb 2024",
-    status: "completed",
-    admin: "John B",
-    resource: "Team Beta",
-    progress: 100,
-    hoursLogged: "512 hrs",
-  },
-  {
-    id: "3",
-    name: "Mobile App Development",
-    startDate: "Feb 2024",
-    endDate: "Jun 2024",
-    status: "in-progress",
-    admin: "Mostapha A",
-    resource: "Team Gamma",
-    progress: 35,
-    hoursLogged: "128 hrs",
-  },
-];
 
 const mockLinkedInPosts: LinkedInPost[] = [
   {
@@ -207,7 +173,7 @@ export default function DashboardPage() {
         </div>
         <div className="w-1/2">
           <ProjectsGrid
-            projects={mockProjects}
+            projects={projects}
             visibleCount={1}
             autoRotate={true}
             baseDelay={ANIMATION_DELAYS.projectsGrid}

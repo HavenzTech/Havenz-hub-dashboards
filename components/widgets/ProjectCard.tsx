@@ -2,21 +2,29 @@ import { Card } from "@/components/ui/Card";
 import { StatusBadge } from "@/components/ui/StatusBadge";
 import { ProgressBar } from "@/components/ui/ProgressBar";
 import { classNames } from "@/lib/utils";
-import type { Project } from "@/types";
+import type { Project } from "@/lib/data/projects";
+import type { ProjectStatus } from "@/types";
 
 interface ProjectCardProps extends Project {
   className?: string;
 }
+
+// Map local project status to API status
+const statusMap: Record<Project["status"], ProjectStatus> = {
+  Active: "active",
+  Completed: "completed",
+  "On Hold": "on-hold",
+};
 
 export function ProjectCard({
   name,
   startDate,
   endDate,
   status,
-  admin,
-  resource,
+  projectLead,
+  department,
   progress,
-  hoursLogged,
+  budget,
   className,
 }: ProjectCardProps) {
   return (
@@ -26,7 +34,7 @@ export function ProjectCard({
     >
       {/* Status Badge */}
       <div className="mb-2">
-        <StatusBadge status={status} size="xxs" />
+        <StatusBadge status={statusMap[status]} size="xxs" />
       </div>
 
       {/* Project Name */}
@@ -48,16 +56,16 @@ export function ProjectCard({
       <div className="mt-auto pt-4 border-t border-white/10 grid grid-cols-2 gap-4">
         <div>
           <span className="text-label text-text-muted block">Lead</span>
-          <span className="text-body text-text-primary">{admin}</span>
+          <span className="text-body text-text-primary">{projectLead}</span>
         </div>
         <div>
-          <span className="text-label text-text-muted block">Resource</span>
-          <span className="text-body text-text-primary">{resource}</span>
+          <span className="text-label text-text-muted block">Department</span>
+          <span className="text-body text-text-primary">{department}</span>
         </div>
         <div className="col-span-2">
-          <span className="text-label text-text-muted block">Hours Logged</span>
+          <span className="text-label text-text-muted block">Budget</span>
           <span className="text-body font-semibold text-brand-accent">
-            {hoursLogged}
+            {budget}
           </span>
         </div>
       </div>

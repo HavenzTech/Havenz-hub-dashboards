@@ -6,7 +6,7 @@ import { SectionTitle } from "@/components/ui/SectionTitle";
 import { BlurFade } from "@/components/ui/BlurFade";
 import { classNames } from "@/lib/utils";
 import { REFRESH_INTERVALS } from "@/lib/constants";
-import type { Project } from "@/types";
+import type { Project } from "@/lib/data/projects";
 
 interface ProjectsGridProps {
   projects: Project[];
