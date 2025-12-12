@@ -122,7 +122,7 @@ export default function DashboardPage() {
       companyId: p.companyId || "",
       companyName: p.companyName || "Unknown",
       companyLogo: "", // API doesn't provide this directly
-      department: p.departmentName || "N/A",
+      department: "N/A", // departmentName not available on ProjectDto
       status: (p.status === "active" ? "Active" : p.status === "completed" ? "Completed" : "On Hold") as "Active" | "Completed" | "On Hold",
       progress: p.progress ?? 0,
       startDate: formatDate(p.startDate),

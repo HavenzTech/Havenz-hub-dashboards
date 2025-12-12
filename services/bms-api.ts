@@ -279,25 +279,8 @@ interface RecordMetricRequest {
 }
 
 // ============================================
-// Task Types (from Swagger)
+// Task Types (from Swagger) - Using imported TaskDto from @/types/bms
 // ============================================
-
-interface TaskDto {
-  id?: string;
-  projectId?: string;
-  title?: string | null;
-  description?: string | null;
-  status?: string | null;
-  priority?: string | null;
-  dueDate?: string | null;
-  assignedToUserId?: string | null;
-  createdByUserId?: string;
-  createdAt?: string;
-  updatedAt?: string;
-  projectName?: string | null;
-  assignedToUserName?: string | null;
-  createdByUserName?: string | null;
-}
 
 interface CreateTaskRequest {
   projectId: string;
@@ -807,23 +790,6 @@ class BmsApiService {
 
     removeDepartment: (projectId: string, departmentId: string): Promise<void> =>
       this.delete(`/projects/${projectId}/departments/${departmentId}`),
-  };
-
-  // ============================================
-  // Task Endpoints - /api/havenzhub/tasks
-  // ============================================
-
-  tasks = {
-    getMyTasks: (status?: string): Promise<TaskDto[]> => {
-      const query = status ? `?status=${status}` : '';
-      return this.get(`/tasks/my-tasks${query}`);
-    },
-
-    getByProject: (projectId: string): Promise<TaskDto[]> =>
-      this.get(`/tasks/project/${projectId}`),
-
-    getById: (id: string): Promise<TaskDto> =>
-      this.get(`/tasks/${id}`),
   };
 
   // ============================================
