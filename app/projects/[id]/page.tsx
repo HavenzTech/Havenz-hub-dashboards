@@ -312,7 +312,7 @@ export default function ProjectDetailPage() {
               />
             </div>
             {/* Tasks Progress */}
-            {(project.totalTasks !== undefined && project.totalTasks > 0) && (
+            {(project.totalTasks != null && project.totalTasks > 0) && (
               <div className="flex items-center gap-2 mt-3 text-sm text-text-secondary">
                 <ListTodo className="w-4 h-4" />
                 <span>{project.completedTasks ?? 0} of {project.totalTasks} tasks completed</span>
