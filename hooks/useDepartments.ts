@@ -1,27 +1,36 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
-import { departmentsService } from "@/lib/api";
-import type { Department } from "@/types";
+import { bmsApi } from "@/services/bms-api";
+import { useAuth } from "@/providers";
+import type { DepartmentDto } from "@/types/bms";
 
 interface UseDepartmentsResult {
-  departments: Department[];
+  departments: DepartmentDto[];
   isLoading: boolean;
   error: string | null;
   refetch: () => Promise<void>;
 }
 
 export function useDepartments(): UseDepartmentsResult {
-  const [departments, setDepartments] = useState<Department[]>([]);
+  const { isAuthenticated, isLoading: authLoading } = useAuth();
+  const [departments, setDepartments] = useState<DepartmentDto[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   const fetchDepartments = useCallback(async () => {
+    if (!isAuthenticated) {
+      setIsLoading(false);
+      return;
+    }
+
     try {
       setIsLoading(true);
       setError(null);
-      const response = await departmentsService.getAll();
-      setDepartments(response.data);
+      const response = await bmsApi.departments.getAll();
+      console.log('[Departments] API response:', response);
+      console.log('[Departments] First department:', response.data?.[0]);
+      setDepartments(response.data || []);
     } catch (err) {
       const message = err instanceof Error ? err.message : "Failed to fetch departments";
       setError(message);
@@ -29,11 +38,13 @@ export function useDepartments(): UseDepartmentsResult {
     } finally {
       setIsLoading(false);
     }
-  }, []);
+  }, [isAuthenticated]);
 
   useEffect(() => {
-    fetchDepartments();
-  }, [fetchDepartments]);
+    if (!authLoading) {
+      fetchDepartments();
+    }
+  }, [authLoading, fetchDepartments]);
 
-  return { departments, isLoading, error, refetch: fetchDepartments };
+  return { departments, isLoading: isLoading || authLoading, error, refetch: fetchDepartments };
 }

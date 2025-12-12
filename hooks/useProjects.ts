@@ -1,27 +1,35 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
-import { projectsService } from "@/lib/api";
-import type { Project } from "@/types";
+import { bmsApi } from "@/services/bms-api";
+import { useAuth } from "@/providers";
+import type { ProjectDto } from "@/types/bms";
 
 interface UseProjectsResult {
-  projects: Project[];
+  projects: ProjectDto[];
   isLoading: boolean;
   error: string | null;
   refetch: () => Promise<void>;
 }
 
 export function useProjects(): UseProjectsResult {
-  const [projects, setProjects] = useState<Project[]>([]);
+  const { isAuthenticated, isLoading: authLoading } = useAuth();
+  const [projects, setProjects] = useState<ProjectDto[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   const fetchProjects = useCallback(async () => {
+    if (!isAuthenticated) {
+      setIsLoading(false);
+      return;
+    }
+
     try {
       setIsLoading(true);
       setError(null);
-      const response = await projectsService.getAll();
-      setProjects(response.data);
+      const response = await bmsApi.projects.getAll();
+      console.log('[Projects] API response:', response);
+      setProjects(response.data || []);
     } catch (err) {
       const message = err instanceof Error ? err.message : "Failed to fetch projects";
       setError(message);
@@ -29,11 +37,13 @@ export function useProjects(): UseProjectsResult {
     } finally {
       setIsLoading(false);
     }
-  }, []);
+  }, [isAuthenticated]);
 
   useEffect(() => {
-    fetchProjects();
-  }, [fetchProjects]);
+    if (!authLoading) {
+      fetchProjects();
+    }
+  }, [authLoading, fetchProjects]);
 
-  return { projects, isLoading, error, refetch: fetchProjects };
+  return { projects, isLoading: isLoading || authLoading, error, refetch: fetchProjects };
 }

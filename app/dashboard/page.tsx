@@ -1,5 +1,6 @@
 "use client";
 
+import { useMemo } from "react";
 import { ProfileSection } from "@/components/widgets/ProfileSection";
 import { ProjectsGrid } from "@/components/widgets/ProjectsGrid";
 import { LinkedInFeed } from "@/components/widgets/LinkedInFeed";
@@ -7,53 +8,10 @@ import { CompaniesList } from "@/components/widgets/CompaniesList";
 import { BlurFade } from "@/components/ui/BlurFade";
 import { BlurText } from "@/components/ui/BlurText";
 import type { LinkedInPost } from "@/types";
-import { projects } from "@/lib/data/projects";
-
-// Profile data
-const profileData = {
-  name: "Sunny Sarpal",
-  title: "CEO",
-  handle: "sunnysarpal",
-  status: "Available",
-  avatarUrl: "/sunnypfp3.png",
-};
-
-// Companies data
-const companies = [
-  {
-    name: "Agritech Haven LP",
-    location: "Red Deer",
-    logoSrc: "/ahi.png",
-    logoScale: 0.8,
-  },
-  {
-    name: "Energy Haven",
-    location: "Calgary",
-    logoSrc: "/energyhaven.png",
-  },
-  {
-    name: "Havenz Tech",
-    location: "Calgary",
-    logoSrc: "/havenztech.png",
-  },
-  {
-    name: "HavenSure",
-    location: "Calgary",
-    logoSrc: "/havensure.png",
-    logoScale: 1.4,
-  },
-  {
-    name: "Ledgion",
-    location: "Calgary",
-    logoSrc: "/ledgion.png",
-    logoScale: 1.2,
-  },
-  {
-    name: "RISE Basketball",
-    location: "Calgary",
-    logoSrc: "/rise.png",
-  },
-];
+import type { Project } from "@/lib/data/projects";
+import { useCurrentUser } from "@/hooks/useCurrentUser";
+import { useCompanies } from "@/hooks/useCompanies";
+import { useProjects } from "@/hooks/useProjects";
 
 
 const mockLinkedInPosts: LinkedInPost[] = [
@@ -115,24 +73,94 @@ const mockLinkedInPosts: LinkedInPost[] = [
   },
 ];
 
+// Helper to format budget
+function formatBudget(amount?: number | null): string {
+  if (amount === null || amount === undefined) return "N/A";
+  if (amount >= 1_000_000) {
+    return `$${(amount / 1_000_000).toFixed(1)}M`;
+  }
+  if (amount >= 1_000) {
+    return `$${(amount / 1_000).toFixed(0)}K`;
+  }
+  return `$${amount}`;
+}
+
+// Helper to format date
+function formatDate(dateStr?: string | null): string {
+  if (!dateStr) return "N/A";
+  try {
+    const date = new Date(dateStr);
+    return date.toLocaleDateString("en-US", {
+      month: "short",
+      year: "numeric",
+      timeZone: "UTC",
+    });
+  } catch {
+    return dateStr;
+  }
+}
+
 export default function DashboardPage() {
+  const { user, isLoading: userLoading } = useCurrentUser();
+  const { companies, isLoading: companiesLoading } = useCompanies();
+  const { projects: apiProjects, isLoading: projectsLoading } = useProjects();
+
+  // Map API companies to CompaniesList format
+  const companiesList = useMemo(() => {
+    return companies.map((c) => ({
+      name: c.name || "Unknown",
+      location: c.location || "N/A",
+      logoSrc: c.logoUrl || "",
+    }));
+  }, [companies]);
+
+  // Map API projects to Project format for ProjectsGrid
+  const projectsList = useMemo((): Project[] => {
+    return apiProjects.map((p) => ({
+      id: p.id || "",
+      name: p.name || "Unnamed Project",
+      companyId: p.companyId || "",
+      companyName: p.companyName || "Unknown",
+      companyLogo: "", // API doesn't provide this directly
+      department: p.departmentName || "N/A",
+      status: (p.status === "active" ? "Active" : p.status === "completed" ? "Completed" : "On Hold") as "Active" | "Completed" | "On Hold",
+      progress: p.progress ?? 0,
+      startDate: formatDate(p.startDate),
+      endDate: formatDate(p.endDate),
+      projectLead: p.teamLead || "N/A",
+      budget: p.budgetAllocatedFormatted || formatBudget(p.budgetAllocated),
+      milestones: [],
+      teamMembers: [],
+    }));
+  }, [apiProjects]);
+
+  // Get user info with fallbacks
+  const userName = user?.name || "User";
+  const userRole = (user?.roleDisplayName || user?.role || "Member").toUpperCase();
+  const userAvatar = user?.pictureUrl || "/sunnypfp3.png"; // Fallback to default
+
   // Animation timing configuration (in ms)
-  // Creates a top-to-bottom cascade effect
   const ANIMATION_DELAYS = {
-    // Row 1 - Profile section (left)
     profileWelcome: 0,
     profileName: 200,
     profileTitle: 400,
     profileAvatar: 600,
-    // Row 1 - Companies section (right)
     companiesTitle: 100,
     companiesListStart: 300,
     companiesStagger: 100,
-    // Row 2 - LinkedIn Feed (left)
     linkedInFeed: 900,
-    // Row 2 - Projects Grid (right)
     projectsGrid: 1000,
   };
+
+  const isLoading = userLoading || companiesLoading || projectsLoading;
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center h-full">
+        <div className="text-text-muted">Loading dashboard...</div>
+      </div>
+    );
+  }
 
   return (
     <div className="flex flex-col gap-8 h-full overflow-hidden">
@@ -140,11 +168,11 @@ export default function DashboardPage() {
       <section className="w-full flex gap-8">
         <div className="w-1/2">
           <ProfileSection
-            avatarUrl={profileData.avatarUrl}
-            name={profileData.name}
-            title={profileData.title}
-            handle={profileData.handle}
-            status={profileData.status}
+            avatarUrl={userAvatar}
+            name={userName}
+            title={userRole}
+            handle=""
+            status="Available"
             contactText="Contact"
             baseDelay={ANIMATION_DELAYS.profileWelcome}
           />
@@ -153,11 +181,15 @@ export default function DashboardPage() {
           <h2 className="text-heading font-semibold text-text-primary mb-6 text-center">
             <BlurText text="Companies" delay={ANIMATION_DELAYS.companiesTitle} duration={800} />
           </h2>
-          <CompaniesList
-            companies={companies}
-            baseDelay={ANIMATION_DELAYS.companiesListStart}
-            staggerDelay={ANIMATION_DELAYS.companiesStagger}
-          />
+          {companiesList.length > 0 ? (
+            <CompaniesList
+              companies={companiesList}
+              baseDelay={ANIMATION_DELAYS.companiesListStart}
+              staggerDelay={ANIMATION_DELAYS.companiesStagger}
+            />
+          ) : (
+            <div className="text-text-muted">No companies found</div>
+          )}
         </div>
       </section>
 
@@ -173,7 +205,7 @@ export default function DashboardPage() {
         </div>
         <div className="w-1/2">
           <ProjectsGrid
-            projects={projects}
+            projects={projectsList}
             visibleCount={1}
             autoRotate={true}
             baseDelay={ANIMATION_DELAYS.projectsGrid}
