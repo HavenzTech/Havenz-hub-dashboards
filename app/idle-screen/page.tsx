@@ -71,7 +71,7 @@ export default function IdleScreenPage() {
         }}
       >
         <Image
-          src="/havenzhub.png"
+          src="/havenz-hub.png"
           alt="Havenz Hub"
           width={logoSize.width}
           height={logoSize.height}
