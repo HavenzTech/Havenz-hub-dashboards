@@ -7,26 +7,66 @@ import { Header } from "@/components/layout/Header";
 import { Container } from "@/components/layout/Container";
 import { BlurFade } from "@/components/ui/BlurFade";
 import { COMPANY_NAME, COMPANY_LOGO, COMPANY_URL } from "@/lib/constants";
-import { getPropertyById } from "@/lib/data/properties";
+import { useProperty } from "@/hooks/useProperty";
+import { useCompany } from "@/hooks/useCompany";
 import { classNames } from "@/lib/utils";
-import { ArrowLeft, MapPin, Building2, Calendar, Ruler, Wrench, CheckCircle } from "lucide-react";
+import { ArrowLeft, MapPin, Building2, Ruler, DollarSign, Cpu, Layers, Clock } from "lucide-react";
+
+// Format area to display string
+function formatArea(area?: number | null): string {
+  if (area === null || area === undefined) return "N/A";
+  if (area >= 1_000_000) {
+    return `${(area / 1_000_000).toFixed(1)}M sq ft`;
+  }
+  if (area >= 1_000) {
+    return `${(area / 1_000).toFixed(0)}K sq ft`;
+  }
+  return `${area.toLocaleString()} sq ft`;
+}
+
+// Format currency
+function formatCurrency(amount?: number | null): string {
+  if (amount === null || amount === undefined) return "N/A";
+  if (amount >= 1_000_000) {
+    return `$${(amount / 1_000_000).toFixed(1)}M`;
+  }
+  if (amount >= 1_000) {
+    return `$${(amount / 1_000).toFixed(0)}K`;
+  }
+  return `$${amount.toLocaleString()}`;
+}
 
 export default function PropertyDetailPage() {
   const params = useParams();
   const id = params.id as string;
-  const property = getPropertyById(id);
+  const { property, isLoading, error } = useProperty(id);
+  const { company } = useCompany(property?.companyId || null);
 
   const ANIMATION_DELAYS = {
     header: 0,
     backButton: 400,
     propertyHeader: 500,
     stats: 700,
-    description: 850,
-    features: 1000,
-    maintenance: 1150,
+    details: 850,
   };
 
-  if (!property) {
+  const getStatusColor = (status?: string | null) => {
+    const normalizedStatus = status?.toLowerCase();
+    switch (normalizedStatus) {
+      case "active":
+      case "operational":
+        return "bg-status-success/20 text-status-success";
+      case "maintenance":
+      case "under-construction":
+        return "bg-status-warning/20 text-status-warning";
+      case "inactive":
+        return "bg-white/10 text-text-muted";
+      default:
+        return "bg-white/10 text-text-muted";
+    }
+  };
+
+  if (isLoading) {
     return (
       <Container>
         <Header
@@ -36,7 +76,23 @@ export default function PropertyDetailPage() {
           className="mb-4"
         />
         <div className="flex flex-col items-center justify-center flex-1 gap-4">
-          <h1 className="text-2xl text-text-primary">Property not found</h1>
+          <div className="text-text-muted">Loading property...</div>
+        </div>
+      </Container>
+    );
+  }
+
+  if (error || !property) {
+    return (
+      <Container>
+        <Header
+          companyName={COMPANY_NAME}
+          companyUrl={COMPANY_URL}
+          logoSrc={COMPANY_LOGO}
+          className="mb-4"
+        />
+        <div className="flex flex-col items-center justify-center flex-1 gap-4">
+          <h1 className="text-2xl text-text-primary">{error || "Property not found"}</h1>
           <Link href="/properties" className="text-accent-primary hover:underline">
             Back to Properties
           </Link>
@@ -45,11 +101,9 @@ export default function PropertyDetailPage() {
     );
   }
 
-  const statusStyles = {
-    Operational: "bg-status-success/20 text-status-success",
-    "Under Maintenance": "bg-status-warning/20 text-status-warning",
-    Inactive: "bg-white/10 text-text-muted",
-  };
+  const displayStatus = property.status || "Unknown";
+  const displayLocation = [property.locationCity, property.locationProvince].filter(Boolean).join(", ") || "N/A";
+  const fullAddress = [property.locationAddress, property.locationCity, property.locationProvince, property.locationPostalCode].filter(Boolean).join(", ");
 
   return (
     <Container>
@@ -61,7 +115,7 @@ export default function PropertyDetailPage() {
         baseDelay={ANIMATION_DELAYS.header}
       />
 
-      <div className="flex flex-col flex-1 gap-5 overflow-y-auto">
+      <div className="flex flex-col flex-1 gap-4 overflow-y-auto">
         {/* Back button */}
         <BlurFade delay={ANIMATION_DELAYS.backButton} duration={600} yOffset={16}>
           <Link
@@ -76,140 +130,187 @@ export default function PropertyDetailPage() {
         {/* Property Header */}
         <BlurFade delay={ANIMATION_DELAYS.propertyHeader} duration={600} yOffset={16}>
           <div className="flex items-center gap-6">
-            <div className="relative w-20 h-20 rounded-xl overflow-hidden shrink-0 bg-white/5">
-              <Image
-                src={property.companyLogo}
-                alt={property.companyName}
-                fill
-                className="object-contain"
-                style={{ transform: `scale(${property.companyLogoScale || 1})` }}
-              />
-            </div>
-            <div className="flex flex-col gap-2">
-              <h1 className="text-3xl font-bold text-text-primary">{property.name}</h1>
-              <Link
-                href={`/companies/${property.companyId}`}
-                className="text-lg text-accent-primary hover:underline"
-              >
-                {property.companyName}
-              </Link>
-              {property.address && (
-                <div className="flex items-center gap-2 text-text-secondary text-sm">
-                  <MapPin className="w-4 h-4" />
-                  {property.address}
+            <div className="relative w-16 h-16 rounded-xl overflow-hidden shrink-0 bg-white/5">
+              {company?.logoUrl ? (
+                <Image
+                  src={company.logoUrl}
+                  alt={property.companyName || "Company"}
+                  fill
+                  className="object-contain"
+                />
+              ) : (
+                <div className="w-full h-full flex items-center justify-center text-text-muted text-2xl font-bold">
+                  {(property.companyName || property.name || "?").charAt(0)}
                 </div>
               )}
-              <div
-                className={classNames(
-                  "px-3 py-1 rounded-full text-sm font-medium w-fit",
-                  statusStyles[property.status]
+            </div>
+            <div className="flex flex-col gap-1 flex-1">
+              <h1 className="text-2xl font-bold text-text-primary">{property.name || "Unnamed Property"}</h1>
+              <div className="flex items-center gap-3">
+                {property.companyId && (property.companyName || company?.name) && (
+                  <Link
+                    href={`/companies/${property.companyId}`}
+                    className="text-base text-accent-primary hover:underline"
+                  >
+                    {property.companyName || company?.name}
+                  </Link>
                 )}
-              >
-                <span className="mr-1.5">●</span>
-                {property.status}
+                <div
+                  className={classNames(
+                    "px-2.5 py-0.5 rounded-full text-xs font-medium",
+                    getStatusColor(property.status)
+                  )}
+                >
+                  <span className="mr-1">●</span>
+                  {displayStatus}
+                </div>
               </div>
+              {fullAddress && (
+                <div className="flex items-center gap-2 text-text-secondary text-sm">
+                  <MapPin className="w-4 h-4 shrink-0" />
+                  <span className="truncate">{fullAddress}</span>
+                </div>
+              )}
             </div>
           </div>
         </BlurFade>
 
-        {/* Stats Grid */}
+        {/* Stats Grid - 2 rows */}
         <BlurFade delay={ANIMATION_DELAYS.stats} duration={600} yOffset={16}>
-          <div className="grid grid-cols-4 gap-4">
-            <div className="bg-white/5 rounded-xl p-4 flex items-center gap-3">
-              <div className="w-10 h-10 rounded-lg bg-accent-primary/20 flex items-center justify-center">
+          <div className="grid grid-cols-4 gap-3">
+            {/* Type */}
+            <div className="bg-white/5 rounded-xl p-3 flex items-center gap-3">
+              <div className="w-10 h-10 rounded-lg bg-accent-primary/20 flex items-center justify-center shrink-0">
                 <Building2 className="w-5 h-5 text-accent-primary" />
               </div>
-              <div>
+              <div className="min-w-0">
                 <span className="text-xs text-text-muted uppercase tracking-wide">Type</span>
-                <p className="text-lg font-semibold text-text-primary">{property.type}</p>
+                <p className="text-base font-semibold text-text-primary truncate">{property.type || "N/A"}</p>
               </div>
             </div>
-            <div className="bg-white/5 rounded-xl p-4 flex items-center gap-3">
-              <div className="w-10 h-10 rounded-lg bg-accent-primary/20 flex items-center justify-center">
+
+            {/* Location */}
+            <div className="bg-white/5 rounded-xl p-3 flex items-center gap-3">
+              <div className="w-10 h-10 rounded-lg bg-accent-primary/20 flex items-center justify-center shrink-0">
                 <MapPin className="w-5 h-5 text-accent-primary" />
               </div>
-              <div>
+              <div className="min-w-0">
                 <span className="text-xs text-text-muted uppercase tracking-wide">Location</span>
-                <p className="text-lg font-semibold text-text-primary">{property.location}</p>
+                <p className="text-base font-semibold text-text-primary truncate">{displayLocation}</p>
               </div>
             </div>
-            <div className="bg-white/5 rounded-xl p-4 flex items-center gap-3">
-              <div className="w-10 h-10 rounded-lg bg-accent-primary/20 flex items-center justify-center">
+
+            {/* Total Area */}
+            <div className="bg-white/5 rounded-xl p-3 flex items-center gap-3">
+              <div className="w-10 h-10 rounded-lg bg-accent-primary/20 flex items-center justify-center shrink-0">
                 <Ruler className="w-5 h-5 text-accent-primary" />
               </div>
-              <div>
-                <span className="text-xs text-text-muted uppercase tracking-wide">Size</span>
-                <p className="text-xl font-semibold text-text-primary">{property.size}</p>
+              <div className="min-w-0">
+                <span className="text-xs text-text-muted uppercase tracking-wide">Total Area</span>
+                <p className="text-base font-semibold text-text-primary">{property.totalAreaFormatted || formatArea(property.sizeTotalArea)}</p>
               </div>
             </div>
-            <div className="bg-white/5 rounded-xl p-4 flex items-center gap-3">
-              <div className="w-10 h-10 rounded-lg bg-accent-primary/20 flex items-center justify-center">
-                <Calendar className="w-5 h-5 text-accent-primary" />
+
+            {/* Usable Area */}
+            <div className="bg-white/5 rounded-xl p-3 flex items-center gap-3">
+              <div className="w-10 h-10 rounded-lg bg-accent-primary/20 flex items-center justify-center shrink-0">
+                <Ruler className="w-5 h-5 text-accent-primary" />
               </div>
-              <div>
-                <span className="text-xs text-text-muted uppercase tracking-wide">Acquired</span>
-                <p className="text-xl font-semibold text-text-primary">{property.acquired}</p>
+              <div className="min-w-0">
+                <span className="text-xs text-text-muted uppercase tracking-wide">Usable Area</span>
+                <p className="text-base font-semibold text-text-primary">{property.usableAreaFormatted || formatArea(property.sizeUsableArea)}</p>
+              </div>
+            </div>
+
+            {/* Floors */}
+            <div className="bg-white/5 rounded-xl p-3 flex items-center gap-3">
+              <div className="w-10 h-10 rounded-lg bg-accent-primary/20 flex items-center justify-center shrink-0">
+                <Layers className="w-5 h-5 text-accent-primary" />
+              </div>
+              <div className="min-w-0">
+                <span className="text-xs text-text-muted uppercase tracking-wide">Floors</span>
+                <p className="text-base font-semibold text-text-primary">{property.sizeFloors ?? "N/A"}</p>
+              </div>
+            </div>
+
+            {/* Devices */}
+            <div className="bg-white/5 rounded-xl p-3 flex items-center gap-3">
+              <div className="w-10 h-10 rounded-lg bg-accent-primary/20 flex items-center justify-center shrink-0">
+                <Cpu className="w-5 h-5 text-accent-primary" />
+              </div>
+              <div className="min-w-0">
+                <span className="text-xs text-text-muted uppercase tracking-wide">Devices</span>
+                <p className="text-base font-semibold text-text-primary">{property.deviceCount ?? 0}</p>
+              </div>
+            </div>
+
+            {/* Current Value */}
+            <div className="bg-white/5 rounded-xl p-3 flex items-center gap-3">
+              <div className="w-10 h-10 rounded-lg bg-accent-primary/20 flex items-center justify-center shrink-0">
+                <DollarSign className="w-5 h-5 text-accent-primary" />
+              </div>
+              <div className="min-w-0">
+                <span className="text-xs text-text-muted uppercase tracking-wide">Value</span>
+                <p className="text-base font-semibold text-text-primary">{property.currentValueFormatted || formatCurrency(property.currentValue)}</p>
+              </div>
+            </div>
+
+            {/* Monthly Costs */}
+            <div className="bg-white/5 rounded-xl p-3 flex items-center gap-3">
+              <div className="w-10 h-10 rounded-lg bg-accent-primary/20 flex items-center justify-center shrink-0">
+                <DollarSign className="w-5 h-5 text-accent-primary" />
+              </div>
+              <div className="min-w-0">
+                <span className="text-xs text-text-muted uppercase tracking-wide">Monthly Costs</span>
+                <p className="text-base font-semibold text-text-primary">{property.monthlyOperatingCostsFormatted || formatCurrency(property.monthlyOperatingCosts)}</p>
               </div>
             </div>
           </div>
         </BlurFade>
 
-        {/* Description */}
-        {property.description && (
-          <BlurFade delay={ANIMATION_DELAYS.description} duration={600} yOffset={16}>
+        {/* Bottom Section: Description + Additional Info */}
+        <BlurFade delay={ANIMATION_DELAYS.details} duration={600} yOffset={16}>
+          <div className="grid grid-cols-2 gap-4">
+            {/* Description */}
             <div className="bg-white/5 rounded-xl p-4">
               <h2 className="text-lg font-semibold text-text-primary mb-2">About This Property</h2>
-              <p className="text-text-secondary leading-relaxed">{property.description}</p>
+              <p className="text-sm text-text-secondary leading-relaxed">
+                {property.description || "No description available for this property."}
+              </p>
             </div>
-          </BlurFade>
-        )}
 
-        {/* Features */}
-        {property.features && property.features.length > 0 && (
-          <BlurFade delay={ANIMATION_DELAYS.features} duration={600} yOffset={16}>
-            <div className="flex flex-col gap-3">
-              <h2 className="text-xl font-semibold text-text-primary">Features & Amenities</h2>
-              <div className="bg-white/5 rounded-xl p-4">
-                <div className="grid grid-cols-2 gap-3">
-                  {property.features.map((feature, index) => (
-                    <div key={index} className="flex items-center gap-3">
-                      <CheckCircle className="w-5 h-5 text-status-success shrink-0" />
-                      <span className="text-text-primary">{feature}</span>
-                    </div>
-                  ))}
+            {/* Additional Info */}
+            <div className="bg-white/5 rounded-xl p-4">
+              <h2 className="text-lg font-semibold text-text-primary mb-2">Additional Information</h2>
+              <div className="flex flex-col gap-2">
+                <div className="flex items-center justify-between text-sm">
+                  <span className="text-text-muted">Access Logs</span>
+                  <span className="text-text-primary font-medium">{property.accessLogCount ?? 0}</span>
                 </div>
+                <div className="flex items-center justify-between text-sm">
+                  <span className="text-text-muted">Country</span>
+                  <span className="text-text-primary font-medium">{property.locationCountry || "N/A"}</span>
+                </div>
+                <div className="flex items-center justify-between text-sm">
+                  <span className="text-text-muted">Postal Code</span>
+                  <span className="text-text-primary font-medium">{property.locationPostalCode || "N/A"}</span>
+                </div>
+                {property.createdTimeAgo && (
+                  <div className="flex items-center justify-between text-sm">
+                    <span className="text-text-muted">Created</span>
+                    <span className="text-text-primary font-medium">{property.createdTimeAgo}</span>
+                  </div>
+                )}
+                {property.updatedTimeAgo && (
+                  <div className="flex items-center justify-between text-sm">
+                    <span className="text-text-muted">Updated</span>
+                    <span className="text-text-primary font-medium">{property.updatedTimeAgo}</span>
+                  </div>
+                )}
               </div>
             </div>
-          </BlurFade>
-        )}
-
-        {/* Maintenance History */}
-        {property.maintenanceHistory && property.maintenanceHistory.length > 0 && (
-          <BlurFade delay={ANIMATION_DELAYS.maintenance} duration={600} yOffset={16}>
-            <div className="flex flex-col gap-3 pb-6">
-              <h2 className="text-xl font-semibold text-text-primary">Maintenance History</h2>
-              <div className="bg-white/5 rounded-xl p-4">
-                <div className="flex flex-col gap-3">
-                  {property.maintenanceHistory.map((record, index) => (
-                    <div
-                      key={index}
-                      className="flex items-center gap-4"
-                    >
-                      <Wrench className="w-5 h-5 text-text-muted shrink-0" />
-                      <div className="flex-1">
-                        <span className="font-medium text-text-primary">
-                          {record.description}
-                        </span>
-                      </div>
-                      <span className="text-sm text-text-muted">{record.date}</span>
-                      <span className="text-sm font-semibold text-accent-primary">{record.cost}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-          </BlurFade>
-        )}
+          </div>
+        </BlurFade>
       </div>
     </Container>
   );

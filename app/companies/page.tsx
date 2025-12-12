@@ -7,19 +7,11 @@ import { CompanyCard } from "@/components/widgets/CompanyCard";
 import { RotatingCompanyCard } from "@/components/widgets/RotatingCompanyCard";
 import { BlurFade } from "@/components/ui/BlurFade";
 import { COMPANY_NAME, COMPANY_LOGO, COMPANY_URL } from "@/lib/constants";
-import { companies } from "@/lib/data/companies";
-
-// Get companies by id for fixed positions
-const agritechHaven = companies.find((c) => c.id === "agritech-haven")!;
-const havenzTech = companies.find((c) => c.id === "havenz-tech")!;
-const riseBasketball = companies.find((c) => c.id === "rise-basketball")!;
-
-// Rotating companies (bottom-right)
-const rotatingCompanies = companies.filter((c) =>
-  ["energy-haven", "havensure", "ledgion"].includes(c.id)
-);
+import { useCompanies } from "@/hooks/useCompanies";
 
 export default function CompaniesPage() {
+  const { companies, isLoading, error } = useCompanies();
+
   // Animation timing configuration (in ms)
   const ANIMATION_DELAYS = {
     header: 0,
@@ -29,6 +21,10 @@ export default function CompaniesPage() {
     bottomLeft: 900,
     bottomRight: 1000,
   };
+
+  // Show first 3 companies as fixed cards, rest in rotating card
+  const fixedCompanies = companies.slice(0, 3);
+  const rotatingCompanies = companies.slice(3);
 
   return (
     <Container>
@@ -42,72 +38,59 @@ export default function CompaniesPage() {
       <div className="flex flex-col flex-1 gap-6 overflow-hidden">
         <SectionTitle animated delay={ANIMATION_DELAYS.title}>Companies</SectionTitle>
 
-        {/* 2x2 Grid */}
-        <div className="grid grid-cols-2 gap-6 flex-1">
-          {/* Top Left - Agritech Haven */}
-          <div className="flex flex-col items-center">
-            <BlurFade delay={ANIMATION_DELAYS.topLeft} duration={600} yOffset={16}>
-              <CompanyCard
-                id={agritechHaven.id}
-                name={agritechHaven.name}
-                logoSrc={agritechHaven.logoSrc}
-                logoScale={agritechHaven.logoScale}
-                status={agritechHaven.status}
-                revenue={agritechHaven.revenue}
-                location={agritechHaven.location}
-                industry={agritechHaven.industry}
-                employees={agritechHaven.employees}
-                founded={agritechHaven.founded}
-              />
-            </BlurFade>
+        {isLoading ? (
+          <div className="flex items-center justify-center flex-1">
+            <div className="text-text-muted">Loading companies...</div>
           </div>
+        ) : error ? (
+          <div className="flex items-center justify-center flex-1">
+            <div className="text-red-400">Error: {error}</div>
+          </div>
+        ) : companies.length === 0 ? (
+          <div className="flex items-center justify-center flex-1">
+            <div className="text-text-muted">No companies found</div>
+          </div>
+        ) : (
+          /* 2x2 Grid */
+          <div className="grid grid-cols-2 gap-6 flex-1">
+            {/* First 3 companies as fixed cards */}
+            {fixedCompanies.map((company, index) => {
+              const delays = [
+                ANIMATION_DELAYS.topLeft,
+                ANIMATION_DELAYS.topRight,
+                ANIMATION_DELAYS.bottomLeft,
+              ];
+              return (
+                <div key={company.id} className="flex flex-col items-center">
+                  <BlurFade delay={delays[index]} duration={600} yOffset={16}>
+                    <CompanyCard
+                      id={company.id}
+                      name={company.name || "Unknown"}
+                      logoUrl={company.logoUrl}
+                      status={company.status}
+                      revenue={company.annualRevenue}
+                      location={company.location}
+                      industry={company.industry}
+                      employees={company.employeeCount}
+                    />
+                  </BlurFade>
+                </div>
+              );
+            })}
 
-          {/* Top Right - Havenz Tech */}
-          <div className="flex flex-col items-center">
-            <BlurFade delay={ANIMATION_DELAYS.topRight} duration={600} yOffset={16}>
-              <CompanyCard
-                id={havenzTech.id}
-                name={havenzTech.name}
-                logoSrc={havenzTech.logoSrc}
-                logoScale={havenzTech.logoScale}
-                status={havenzTech.status}
-                revenue={havenzTech.revenue}
-                location={havenzTech.location}
-                industry={havenzTech.industry}
-                employees={havenzTech.employees}
-                founded={havenzTech.founded}
-              />
-            </BlurFade>
+            {/* Bottom Right - Rotating Companies (if there are more than 3) */}
+            {rotatingCompanies.length > 0 && (
+              <div className="flex flex-col items-center">
+                <BlurFade delay={ANIMATION_DELAYS.bottomRight} duration={600} yOffset={16}>
+                  <RotatingCompanyCard
+                    companies={rotatingCompanies}
+                    rotateInterval={15000}
+                  />
+                </BlurFade>
+              </div>
+            )}
           </div>
-
-          {/* Bottom Left - RISE Basketball */}
-          <div className="flex flex-col items-center">
-            <BlurFade delay={ANIMATION_DELAYS.bottomLeft} duration={600} yOffset={16}>
-              <CompanyCard
-                id={riseBasketball.id}
-                name={riseBasketball.name}
-                logoSrc={riseBasketball.logoSrc}
-                logoScale={riseBasketball.logoScale}
-                status={riseBasketball.status}
-                revenue={riseBasketball.revenue}
-                location={riseBasketball.location}
-                industry={riseBasketball.industry}
-                employees={riseBasketball.employees}
-                founded={riseBasketball.founded}
-              />
-            </BlurFade>
-          </div>
-
-          {/* Bottom Right - Rotating Companies */}
-          <div className="flex flex-col items-center">
-            <BlurFade delay={ANIMATION_DELAYS.bottomRight} duration={600} yOffset={16}>
-              <RotatingCompanyCard
-                companies={rotatingCompanies}
-                rotateInterval={15000}
-              />
-            </BlurFade>
-          </div>
-        </div>
+        )}
       </div>
     </Container>
   );

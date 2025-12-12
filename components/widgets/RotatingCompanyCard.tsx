@@ -7,21 +7,31 @@ import { classNames } from "@/lib/utils";
 
 interface Company {
   id?: string;
-  name: string;
-  logoSrc: string;
-  logoScale?: number;
-  status: "Active" | "Inactive";
-  revenue: string;
-  location: string;
-  industry: string;
-  employees: number;
-  founded: number;
+  name?: string | null;
+  logoUrl?: string | null;
+  status?: string | null;
+  annualRevenue?: number | null;
+  location?: string | null;
+  industry?: string | null;
+  employeeCount?: number;
 }
 
 interface RotatingCompanyCardProps {
   companies: Company[];
   rotateInterval?: number;
   className?: string;
+}
+
+// Helper to format revenue number to display string
+function formatRevenue(revenue?: number | null): string {
+  if (!revenue) return "N/A";
+  if (revenue >= 1_000_000) {
+    return `$${(revenue / 1_000_000).toFixed(1)}M`;
+  }
+  if (revenue >= 1_000) {
+    return `$${(revenue / 1_000).toFixed(0)}K`;
+  }
+  return `$${revenue}`;
 }
 
 export function RotatingCompanyCard({
@@ -50,6 +60,10 @@ export function RotatingCompanyCard({
 
   if (!currentCompany) return null;
 
+  const displayName = currentCompany.name || "Unknown";
+  const isActive = currentCompany.status?.toLowerCase() === "active";
+  const displayStatus = currentCompany.status === "active" ? "Active" : currentCompany.status === "inactive" ? "Inactive" : currentCompany.status || "Unknown";
+
   const cardContent = (
     <div
       className={classNames(
@@ -60,17 +74,22 @@ export function RotatingCompanyCard({
     >
       {/* Header: Logo + Name */}
       <div className="flex items-center gap-4">
-          <div className="relative w-14 h-14 rounded-lg overflow-hidden shrink-0">
-            <Image
-              src={currentCompany.logoSrc}
-              alt={`${currentCompany.name} logo`}
-              fill
-              className="object-contain"
-              style={{ transform: `scale(${currentCompany.logoScale || 1})` }}
-            />
+          <div className="relative w-14 h-14 rounded-lg overflow-hidden shrink-0 bg-white/5">
+            {currentCompany.logoUrl ? (
+              <Image
+                src={currentCompany.logoUrl}
+                alt={`${displayName} logo`}
+                fill
+                className="object-contain"
+              />
+            ) : (
+              <div className="w-full h-full flex items-center justify-center text-text-muted text-xl font-bold">
+                {displayName.charAt(0)}
+              </div>
+            )}
           </div>
           <span className="text-xl font-semibold text-text-primary">
-            {currentCompany.name}
+            {displayName}
           </span>
         </div>
 
@@ -81,13 +100,13 @@ export function RotatingCompanyCard({
         <div
           className={classNames(
             "px-3.5 py-1 rounded-full text-sm font-medium",
-            currentCompany.status === "Active"
+            isActive
               ? "bg-status-success/20 text-status-success"
               : "bg-white/10 text-text-muted"
           )}
         >
           <span className="mr-1.5">●</span>
-          {currentCompany.status}
+          {displayStatus}
         </div>
 
         {/* Info Grid */}
@@ -95,32 +114,27 @@ export function RotatingCompanyCard({
           {/* Revenue */}
           <div className="flex flex-col">
             <span className="text-xs text-text-muted uppercase tracking-wide">Revenue</span>
-            <span className="text-xl font-semibold text-text-primary">{currentCompany.revenue}</span>
+            <span className="text-xl font-semibold text-text-primary">{formatRevenue(currentCompany.annualRevenue)}</span>
           </div>
 
           {/* Location */}
           <div className="flex flex-col">
             <span className="text-xs text-text-muted uppercase tracking-wide">Location</span>
-            <span className="text-xl font-semibold text-text-primary">{currentCompany.location}</span>
+            <span className="text-xl font-semibold text-text-primary">{currentCompany.location || "N/A"}</span>
           </div>
 
           {/* Industry */}
           <div className="flex flex-col">
             <span className="text-xs text-text-muted uppercase tracking-wide">Industry</span>
-            <span className="text-xl font-semibold text-text-primary">{currentCompany.industry}</span>
+            <span className="text-xl font-semibold text-text-primary">{currentCompany.industry || "N/A"}</span>
           </div>
 
           {/* Employees */}
           <div className="flex flex-col">
             <span className="text-xs text-text-muted uppercase tracking-wide">Employees</span>
-            <span className="text-xl font-semibold text-text-primary">{currentCompany.employees}</span>
+            <span className="text-xl font-semibold text-text-primary">{currentCompany.employeeCount ?? 0}</span>
           </div>
         </div>
-
-      {/* Founded */}
-      <div className="text-sm text-text-secondary">
-        Est. {currentCompany.founded}
-      </div>
     </div>
   );
 

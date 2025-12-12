@@ -26,7 +26,10 @@ import type {
   UpdateProjectRequest,
   ProjectDtoPagedResult,
   ProjectMemberDto,
+  ProjectDepartmentDto,
   AddProjectMemberRequest,
+  // Task types
+  TaskDto,
   // Property types
   PropertyDto,
   CreatePropertyRequest,
@@ -436,18 +439,17 @@ class BmsApiService {
     }
 
     // Debug logging
-    if (process.env.NODE_ENV === 'development') {
-      console.log('API Request:', {
-        method: fetchOptions.method || 'GET',
-        url,
-        headers: {
-          ...headers,
-          Authorization: headers['Authorization']
-            ? `Bearer ${headers['Authorization'].substring(7, 27)}...`
-            : 'none',
-        },
-      });
-    }
+    console.log('[BMS API] Request:', {
+      method: fetchOptions.method || 'GET',
+      url,
+      body: fetchOptions.body ? JSON.parse(fetchOptions.body as string) : null,
+      headers: {
+        ...headers,
+        Authorization: headers['Authorization']
+          ? `Bearer ${headers['Authorization'].substring(7, 27)}...`
+          : 'none',
+      },
+    });
 
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), timeout);
@@ -474,6 +476,11 @@ class BmsApiService {
         const errorData = isJson
           ? await response.json()
           : { message: response.statusText };
+        console.log('[BMS API] Error response:', {
+          status: response.status,
+          statusText: response.statusText,
+          errorData,
+        });
         throw new BmsApiError(
           errorData.message || 'API request failed',
           response.status,
@@ -481,6 +488,8 @@ class BmsApiService {
           errorData.details
         );
       }
+
+      console.log('[BMS API] Success response status:', response.status);
 
       // Handle empty responses
       if (contentLength === '0' || !isJson) {
@@ -790,7 +799,7 @@ class BmsApiService {
       this.put(`/projects/${projectId}/members/${userId}/role`, data),
 
     // Department assignments
-    getDepartments: (projectId: string): Promise<DepartmentDto[]> =>
+    getDepartments: (projectId: string): Promise<ProjectDepartmentDto[]> =>
       this.get(`/projects/${projectId}/departments`),
 
     assignDepartment: (projectId: string, departmentId: string): Promise<void> =>
@@ -798,6 +807,23 @@ class BmsApiService {
 
     removeDepartment: (projectId: string, departmentId: string): Promise<void> =>
       this.delete(`/projects/${projectId}/departments/${departmentId}`),
+  };
+
+  // ============================================
+  // Task Endpoints - /api/havenzhub/tasks
+  // ============================================
+
+  tasks = {
+    getMyTasks: (status?: string): Promise<TaskDto[]> => {
+      const query = status ? `?status=${status}` : '';
+      return this.get(`/tasks/my-tasks${query}`);
+    },
+
+    getByProject: (projectId: string): Promise<TaskDto[]> =>
+      this.get(`/tasks/project/${projectId}`),
+
+    getById: (id: string): Promise<TaskDto> =>
+      this.get(`/tasks/${id}`),
   };
 
   // ============================================

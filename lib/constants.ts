@@ -2,9 +2,9 @@
 export const API_URL = process.env.NEXT_PUBLIC_API_URL || "/api";
 
 // Company Configuration
-export const COMPANY_NAME = process.env.NEXT_PUBLIC_COMPANY_NAME || "Agritech Haven International";
-export const COMPANY_URL = process.env.NEXT_PUBLIC_COMPANY_URL || "https://www.agritechhaven.com";
-export const COMPANY_LOGO = "/agritech.svg";
+export const COMPANY_NAME = process.env.NEXT_PUBLIC_COMPANY_NAME || "AI HUB OF INNOVATION";
+export const COMPANY_URL = process.env.NEXT_PUBLIC_COMPANY_URL || "https://www.ahicampus.com";
+export const COMPANY_LOGO = "/ahi.png";
 
 // Display Configuration
 export const DISPLAY = {

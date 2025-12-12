@@ -58,7 +58,7 @@ export function ProjectsGrid({
     <BlurFade delay={baseDelay} duration={600} yOffset={16}>
       <div className={classNames("w-full", className)}>
         <SectionTitle
-          subtitle={projects.length > visibleCount ? `Showing ${currentIndex + 1}-${Math.min(currentIndex + visibleCount, projects.length)} of ${projects.length}` : subtitle}
+          subtitle={projects.length > visibleCount ? `Showing ${currentIndex + 1} of ${projects.length}` : subtitle}
         >
           {title}
         </SectionTitle>

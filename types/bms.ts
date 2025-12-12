@@ -257,6 +257,13 @@ export interface ProjectDto {
   priorityDisplayName?: string | null;
   createdTimeAgo?: string | null;
   updatedTimeAgo?: string | null;
+  projectedDeadline?: string | null;
+  updatedDeadline?: string | null;
+  totalTasks?: number | null;
+  completedTasks?: number | null;
+  daysAheadOrBehind?: number | null;
+  scheduleStatus?: string | null;
+  scheduleStatusFormatted?: string | null;
 }
 
 export interface CreateProjectRequest {
@@ -302,9 +309,54 @@ export interface ProjectMemberDto {
   assignedTimeAgo?: string | null;
 }
 
+export interface ProjectDepartmentDto {
+  departmentId?: string;
+  departmentName?: string | null;
+  assignedAt?: string;
+  memberCount?: number;
+}
+
 export interface AddProjectMemberRequest {
   userId: string;
   role: string;
+}
+
+// ============================================
+// Task Types
+// ============================================
+
+export interface TaskDto {
+  id?: string;
+  companyId?: string;
+  projectId?: string | null;
+  departmentId?: string | null;
+  propertyId?: string | null;
+  title?: string | null;
+  description?: string | null;
+  status?: string | null;
+  priority?: string | null;
+  taskType?: string | null;
+  createdByUserId?: string;
+  assignedToUserId?: string | null;
+  dueDate?: string | null;
+  startDate?: string | null;
+  completedAt?: string | null;
+  estimatedHours?: number | null;
+  actualHours?: number | null;
+  tags?: string | null;
+  notes?: string | null;
+  parentTaskId?: string | null;
+  createdAt?: string;
+  updatedAt?: string;
+  createdByUserName?: string | null;
+  assignedToUserName?: string | null;
+  projectName?: string | null;
+  departmentName?: string | null;
+  propertyName?: string | null;
+  statusDisplayName?: string | null;
+  priorityDisplayName?: string | null;
+  dueDateFormatted?: string | null;
+  isOverdue?: boolean;
 }
 
 // ============================================

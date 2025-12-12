@@ -56,7 +56,7 @@ export function LinkedInFeed({
     <BlurFade delay={baseDelay} duration={600} yOffset={16}>
       <div className={classNames("w-full", className)}>
         <SectionTitle
-          subtitle={posts.length > visibleCount ? `Showing ${currentIndex + 1}-${Math.min(currentIndex + visibleCount, posts.length)} of ${posts.length}` : undefined}
+          subtitle={posts.length > visibleCount ? `Showing ${currentIndex + 1} of ${posts.length}` : undefined}
         >
           {title}
         </SectionTitle>
