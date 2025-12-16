@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo } from "react";
+import { useMemo, useState, useEffect } from "react";
 import { ProfileSection } from "@/components/widgets/ProfileSection";
 import { ProjectsGrid } from "@/components/widgets/ProjectsGrid";
 import { LinkedInFeed } from "@/components/widgets/LinkedInFeed";
@@ -12,6 +12,7 @@ import type { Project } from "@/lib/data/projects";
 import { useCurrentUser } from "@/hooks/useCurrentUser";
 import { useCompanies } from "@/hooks/useCompanies";
 import { useProjects } from "@/hooks/useProjects";
+import { bmsApi } from "@/services/bms-api";
 
 
 const mockLinkedInPosts: LinkedInPost[] = [
@@ -102,9 +103,33 @@ function formatDate(dateStr?: string | null): string {
 }
 
 export default function DashboardPage() {
-  const { user, isLoading: userLoading } = useCurrentUser();
-  const { companies, isLoading: companiesLoading } = useCompanies();
-  const { projects: apiProjects, isLoading: projectsLoading } = useProjects();
+  const { user, isLoading: userLoading, error: userError } = useCurrentUser();
+  const { companies, isLoading: companiesLoading, error: companiesError } = useCompanies();
+  const { projects: apiProjects, isLoading: projectsLoading, error: projectsError } = useProjects();
+  const [departmentCounts, setDepartmentCounts] = useState<Record<string, number>>({});
+
+  // Fetch department counts for all projects
+  useEffect(() => {
+    async function fetchDepartmentCounts() {
+      const counts: Record<string, number> = {};
+      await Promise.all(
+        apiProjects.map(async (project) => {
+          if (project.id) {
+            try {
+              const departments = await bmsApi.projects.getDepartments(project.id);
+              counts[project.id] = departments?.length || 0;
+            } catch {
+              counts[project.id] = 0;
+            }
+          }
+        })
+      );
+      setDepartmentCounts(counts);
+    }
+    if (apiProjects.length > 0) {
+      fetchDepartmentCounts();
+    }
+  }, [apiProjects]);
 
   // Map API companies to CompaniesList format
   const companiesList = useMemo(() => {
@@ -117,23 +142,26 @@ export default function DashboardPage() {
 
   // Map API projects to Project format for ProjectsGrid
   const projectsList = useMemo((): Project[] => {
-    return apiProjects.map((p) => ({
-      id: p.id || "",
-      name: p.name || "Unnamed Project",
-      companyId: p.companyId || "",
-      companyName: p.companyName || "Unknown",
-      companyLogo: "", // API doesn't provide this directly
-      department: "N/A", // departmentName not available on ProjectDto
-      status: (p.status === "active" ? "Active" : p.status === "completed" ? "Completed" : "On Hold") as "Active" | "Completed" | "On Hold",
-      progress: p.progress ?? 0,
-      startDate: formatDate(p.startDate),
-      endDate: formatDate(p.endDate),
-      projectLead: p.teamLead || "N/A",
-      budget: formatBudget(p.budgetAllocated),
-      milestones: [],
-      teamMembers: [],
-    }));
-  }, [apiProjects]);
+    return apiProjects.map((p) => {
+      const deptCount = p.id ? departmentCounts[p.id] : 0;
+      return {
+        id: p.id || "",
+        name: p.name || "Unnamed Project",
+        companyId: p.companyId || "",
+        companyName: p.companyName || "Unknown",
+        companyLogo: "", // API doesn't provide this directly
+        department: String(deptCount),
+        status: (p.status === "active" ? "Active" : p.status === "completed" ? "Completed" : "On Hold") as "Active" | "Completed" | "On Hold",
+        progress: p.progress ?? 0,
+        startDate: formatDate(p.startDate),
+        endDate: formatDate(p.endDate),
+        projectLead: p.teamLead || "N/A",
+        budget: formatBudget(p.budgetAllocated),
+        milestones: [],
+        teamMembers: [],
+      };
+    });
+  }, [apiProjects, departmentCounts]);
 
   // Get user info with fallbacks
   const userName = user?.name || "User";
@@ -154,11 +182,33 @@ export default function DashboardPage() {
   };
 
   const isLoading = userLoading || companiesLoading || projectsLoading;
+  const hasError = userError || companiesError || projectsError;
+  const hasNoData = !user && companies.length === 0 && apiProjects.length === 0;
 
   if (isLoading) {
     return (
       <div className="flex items-center justify-center h-full">
         <div className="text-text-muted">Loading dashboard...</div>
+      </div>
+    );
+  }
+
+  // Show maintenance screen if backend is down or no data loaded
+  if (hasError || hasNoData) {
+    return (
+      <div className="flex flex-col items-center justify-center h-full gap-6">
+        <div className="w-16 h-16 rounded-full bg-accent-primary/20 flex items-center justify-center">
+          <svg className="w-8 h-8 text-accent-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+          </svg>
+        </div>
+        <div className="text-center">
+          <h1 className="text-2xl font-semibold text-text-primary mb-2">System Under Maintenance</h1>
+          <p className="text-text-secondary max-w-md">
+            We&apos;re currently performing scheduled updates to improve your experience. Please check back shortly.
+          </p>
+        </div>
       </div>
     );
   }
