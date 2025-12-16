@@ -35,9 +35,14 @@ export function DepartmentCard({
         className
       )}
     >
-      {/* Company Header: Logo + Name */}
-      <div className="flex items-center gap-4">
-        <div className="relative w-14 h-14 rounded-lg overflow-hidden shrink-0">
+      {/* Department Name */}
+      <h3 className="text-2xl font-bold text-text-primary">
+        {departmentName}
+      </h3>
+
+      {/* Company: Logo + Name */}
+      <div className="flex items-center gap-3">
+        <div className="relative w-10 h-10 rounded-lg overflow-hidden shrink-0">
           <Image
             src={companyLogo}
             alt={`${companyName} logo`}
@@ -46,18 +51,13 @@ export function DepartmentCard({
             style={{ transform: `scale(${companyLogoScale})` }}
           />
         </div>
-        <span className="text-xl font-semibold text-text-primary">
+        <span className="text-base text-text-muted">
           {companyName}
         </span>
       </div>
 
       {/* Divider */}
       <div className="w-full h-px bg-white/10" />
-
-      {/* Department Name */}
-      <h3 className="text-2xl font-bold text-text-primary">
-        {departmentName}
-      </h3>
 
       {/* Status Badge */}
       <div

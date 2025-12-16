@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import { AuthProvider, VoiceIndicatorProvider } from "@/providers";
+import { AuthProvider, VoiceIndicatorProvider, HealthCheckProvider } from "@/providers";
+import { DisplayListener } from "@/components/DisplayListener";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -28,9 +30,16 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <AuthProvider>
-          <VoiceIndicatorProvider>{children}</VoiceIndicatorProvider>
-        </AuthProvider>
+        <HealthCheckProvider>
+          <AuthProvider>
+            <VoiceIndicatorProvider>
+              <Suspense fallback={null}>
+                <DisplayListener />
+              </Suspense>
+              {children}
+            </VoiceIndicatorProvider>
+          </AuthProvider>
+        </HealthCheckProvider>
       </body>
     </html>
   );
