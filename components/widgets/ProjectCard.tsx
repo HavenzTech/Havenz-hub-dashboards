@@ -54,13 +54,13 @@ export function ProjectCard({
 
       {/* Meta Info */}
       <div className="mt-auto pt-4 border-t border-white/10 grid grid-cols-2 gap-4">
-        <div>
+        <div className="min-w-0">
           <span className="text-label text-text-muted block">Lead</span>
-          <span className="text-body text-text-primary">{projectLead}</span>
+          <span className="text-body text-text-primary block truncate" title={projectLead}>{projectLead}</span>
         </div>
-        <div>
-          <span className="text-label text-text-muted block">Department</span>
-          <span className="text-body text-text-primary">{department}</span>
+        <div className="min-w-0">
+          <span className="text-label text-text-muted block">Departments</span>
+          <span className="text-body text-text-primary block truncate" title={department}>{department}</span>
         </div>
         <div className="col-span-2">
           <span className="text-label text-text-muted block">Budget</span>
