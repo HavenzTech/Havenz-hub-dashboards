@@ -20,13 +20,14 @@ interface Department {
 // Format budget number to display string
 function formatBudget(amount?: number | null): string {
   if (amount === null || amount === undefined) return "N/A";
+  const formatter = new Intl.NumberFormat('en-CA', { maximumFractionDigits: 0 });
   if (amount >= 1_000_000) {
-    return `$${(amount / 1_000_000).toFixed(1)}M`;
+    return '$' + (amount / 1_000_000).toFixed(1) + 'M';
   }
   if (amount >= 1_000) {
-    return `$${(amount / 1_000).toFixed(0)}K`;
+    return '$' + formatter.format(Math.round(amount / 1_000)) + 'K';
   }
-  return `$${amount}`;
+  return '$' + formatter.format(amount);
 }
 
 interface RotatingDepartmentListCardProps {
@@ -124,7 +125,7 @@ export function RotatingDepartmentListCard({
           <DollarSign className="w-4 h-4 text-accent-primary shrink-0" />
           <div className="flex flex-col min-w-0 flex-1">
             <span className="text-xs text-text-muted">Budget</span>
-            <span className="text-sm font-semibold text-text-primary">{currentDepartment.budgetAllocatedFormatted || formatBudget(currentDepartment.budgetAllocated)}</span>
+            <span className="text-sm font-semibold text-text-primary">{formatBudget(currentDepartment.budgetAllocated)}</span>
           </div>
         </div>
       </div>
