@@ -1214,6 +1214,22 @@ class BmsApiService {
 }
 
 // ============================================
+// Health Check (root level, no prefix)
+// ============================================
+
+export async function checkBackendHealth(): Promise<boolean> {
+  try {
+    const response = await fetch(`${BASE_URL}/Health`, {
+      method: 'GET',
+      signal: AbortSignal.timeout(10000), // 10 second timeout
+    });
+    return response.ok;
+  } catch {
+    return false;
+  }
+}
+
+// ============================================
 // Export Singleton Instance
 // ============================================
 

@@ -76,30 +76,6 @@ export function RotatingDepartmentCard({
         className
       )}
     >
-      {/* Company Header: Logo + Name (stays static) */}
-      <div className="flex items-center gap-4">
-        <div className="relative w-14 h-14 rounded-lg overflow-hidden shrink-0 bg-white/5">
-          {companyLogo ? (
-            <Image
-              src={companyLogo}
-              alt={`${companyName} logo`}
-              fill
-              className="object-contain"
-            />
-          ) : (
-            <div className="w-full h-full flex items-center justify-center text-text-muted text-xl font-bold">
-              {companyName.charAt(0)}
-            </div>
-          )}
-        </div>
-        <span className="text-xl font-semibold text-text-primary">
-          {companyName}
-        </span>
-      </div>
-
-      {/* Divider */}
-      <div className="w-full h-px bg-white/10" />
-
       {/* Department Content (animated) */}
       {currentDepartment.id ? (
         <Link href={`/departments/${currentDepartment.id}`} className="w-full">
@@ -113,6 +89,30 @@ export function RotatingDepartmentCard({
             <h3 className="text-2xl font-bold text-text-primary">
               {currentDepartment.name || "Unnamed Department"}
             </h3>
+
+            {/* Company: Logo + Name */}
+            <div className="flex items-center gap-3">
+              <div className="relative w-10 h-10 rounded-lg overflow-hidden shrink-0 bg-white/5">
+                {companyLogo ? (
+                  <Image
+                    src={companyLogo}
+                    alt={`${companyName} logo`}
+                    fill
+                    className="object-contain"
+                  />
+                ) : (
+                  <div className="w-full h-full flex items-center justify-center text-text-muted text-sm font-bold">
+                    {companyName.charAt(0)}
+                  </div>
+                )}
+              </div>
+              <span className="text-base text-text-muted">
+                {companyName}
+              </span>
+            </div>
+
+            {/* Divider */}
+            <div className="w-full h-px bg-white/10" />
 
             {/* Led By */}
             {currentDepartment.headName && (
@@ -149,6 +149,30 @@ export function RotatingDepartmentCard({
           <h3 className="text-2xl font-bold text-text-primary">
             {currentDepartment.name || "Unnamed Department"}
           </h3>
+
+          {/* Company: Logo + Name */}
+          <div className="flex items-center gap-3">
+            <div className="relative w-10 h-10 rounded-lg overflow-hidden shrink-0 bg-white/5">
+              {companyLogo ? (
+                <Image
+                  src={companyLogo}
+                  alt={`${companyName} logo`}
+                  fill
+                  className="object-contain"
+                />
+              ) : (
+                <div className="w-full h-full flex items-center justify-center text-text-muted text-sm font-bold">
+                  {companyName.charAt(0)}
+                </div>
+              )}
+            </div>
+            <span className="text-base text-text-muted">
+              {companyName}
+            </span>
+          </div>
+
+          {/* Divider */}
+          <div className="w-full h-px bg-white/10" />
 
           {/* Led By */}
           {currentDepartment.headName && (
