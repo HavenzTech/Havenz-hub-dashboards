@@ -15,13 +15,14 @@ import { ArrowLeft, Calendar, DollarSign, Users, Briefcase, Mail, Clock, CheckCi
 // Format budget number to display string
 function formatBudget(amount?: number | null): string {
   if (amount === null || amount === undefined) return "N/A";
+  const formatter = new Intl.NumberFormat('en-CA', { maximumFractionDigits: 2 });
   if (amount >= 1_000_000) {
-    return `$${(amount / 1_000_000).toFixed(1)}M`;
+    return '$' + (amount / 1_000_000).toFixed(1) + 'M';
   }
   if (amount >= 1_000) {
-    return `$${(amount / 1_000).toFixed(0)}K`;
+    return '$' + formatter.format(amount);
   }
-  return `$${amount}`;
+  return '$' + formatter.format(amount);
 }
 
 // Format date string to readable format (handles UTC dates)
@@ -381,7 +382,7 @@ export default function ProjectDetailPage() {
                 )}
                 <div className="bg-white/5 rounded-lg p-3">
                   <span className="text-xs text-text-muted">Budget</span>
-                  <p className="text-lg font-semibold text-text-primary">{project.budgetAllocatedFormatted || formatBudget(project.budgetAllocated)}</p>
+                  <p className="text-lg font-semibold text-text-primary">{formatBudget(project.budgetAllocated)}</p>
                 </div>
               </div>
             </div>
@@ -396,16 +397,16 @@ export default function ProjectDetailPage() {
               <div className="grid grid-cols-3 gap-4">
                 <div>
                   <span className="text-xs text-text-muted uppercase tracking-wide">Allocated</span>
-                  <p className="text-lg text-text-primary mt-1">{project.budgetAllocatedFormatted || formatBudget(project.budgetAllocated)}</p>
+                  <p className="text-lg text-text-primary mt-1">{formatBudget(project.budgetAllocated)}</p>
                 </div>
                 <div>
                   <span className="text-xs text-text-muted uppercase tracking-wide">Spent</span>
-                  <p className="text-lg text-text-primary mt-1">{project.budgetSpentFormatted || formatBudget(project.budgetSpent)}</p>
+                  <p className="text-lg text-text-primary mt-1">{formatBudget(project.budgetSpent)}</p>
                 </div>
                 <div>
                   <span className="text-xs text-text-muted uppercase tracking-wide">Remaining</span>
                   <p className="text-lg text-text-primary mt-1">
-                    {project.budgetRemainingFormatted || formatBudget(
+                    {formatBudget(
                       project.budgetRemaining ??
                       (project.budgetAllocated != null && project.budgetSpent != null
                         ? project.budgetAllocated - project.budgetSpent

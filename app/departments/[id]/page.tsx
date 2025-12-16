@@ -14,13 +14,14 @@ import { ArrowLeft, Mail, Users, Briefcase, DollarSign } from "lucide-react";
 // Format budget number to display string
 function formatBudget(amount?: number | null): string {
   if (amount === null || amount === undefined) return "N/A";
+  const formatter = new Intl.NumberFormat('en-CA', { maximumFractionDigits: 2 });
   if (amount >= 1_000_000) {
-    return `$${(amount / 1_000_000).toFixed(1)}M`;
+    return '$' + (amount / 1_000_000).toFixed(1) + 'M';
   }
   if (amount >= 1_000) {
-    return `$${(amount / 1_000).toFixed(0)}K`;
+    return '$' + formatter.format(amount);
   }
-  return `$${amount}`;
+  return '$' + formatter.format(amount);
 }
 
 export default function DepartmentDetailPage() {

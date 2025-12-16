@@ -76,13 +76,14 @@ const mockLinkedInPosts: LinkedInPost[] = [
 // Helper to format budget
 function formatBudget(amount?: number | null): string {
   if (amount === null || amount === undefined) return "N/A";
+  const formatter = new Intl.NumberFormat('en-CA', { maximumFractionDigits: 0 });
   if (amount >= 1_000_000) {
-    return `$${(amount / 1_000_000).toFixed(1)}M`;
+    return '$' + (amount / 1_000_000).toFixed(1) + 'M';
   }
   if (amount >= 1_000) {
-    return `$${(amount / 1_000).toFixed(0)}K`;
+    return '$' + formatter.format(Math.round(amount / 1_000)) + 'K';
   }
-  return `$${amount}`;
+  return '$' + formatter.format(amount);
 }
 
 // Helper to format date
@@ -128,7 +129,7 @@ export default function DashboardPage() {
       startDate: formatDate(p.startDate),
       endDate: formatDate(p.endDate),
       projectLead: p.teamLead || "N/A",
-      budget: p.budgetAllocatedFormatted || formatBudget(p.budgetAllocated),
+      budget: formatBudget(p.budgetAllocated),
       milestones: [],
       teamMembers: [],
     }));
