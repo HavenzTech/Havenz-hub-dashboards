@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import type { LinkedInPost } from "@/types";
 
-// Mock LinkedIn posts - replace with LinkedIn API integration
+// Mock LinkedIn posts - replace with LinkedIn API integration i
 const mockPosts: LinkedInPost[] = [
   {
     id: "1",
