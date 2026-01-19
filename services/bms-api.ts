@@ -1218,13 +1218,18 @@ class BmsApiService {
 // ============================================
 
 export async function checkBackendHealth(): Promise<boolean> {
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), 10000);
+
   try {
     const response = await fetch(`${BASE_URL}/Health`, {
       method: 'GET',
-      signal: AbortSignal.timeout(10000), // 10 second timeout
+      signal: controller.signal,
     });
+    clearTimeout(timeoutId);
     return response.ok;
   } catch {
+    clearTimeout(timeoutId);
     return false;
   }
 }
