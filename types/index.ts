@@ -1,6 +1,9 @@
 // BMS types (backend-aligned)
 export * from "./bms";
 
+// Facility display system types
+export * from "./facility";
+
 // LinkedIn types
 export * from "./linkedin";
 
