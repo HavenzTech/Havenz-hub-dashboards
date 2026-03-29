@@ -128,7 +128,7 @@ interface PaginationParams {
 // Area Types (from Swagger)
 // ============================================
 
-interface AreaDto {
+export interface AreaDto {
   id?: string;
   propertyId?: string;
   name?: string | null;
@@ -169,7 +169,7 @@ interface UpdateAreaRequest extends CreateAreaRequest {
 // Equipment Types (from Swagger)
 // ============================================
 
-interface EquipmentDto {
+export interface EquipmentDto {
   id?: string;
   areaId?: string;
   name?: string | null;
@@ -219,7 +219,7 @@ interface UpdateEquipmentRequest extends CreateEquipmentRequest {
 // Alert Types (from Swagger)
 // ============================================
 
-interface EquipmentAlertDto {
+export interface EquipmentAlertDto {
   id?: string;
   equipmentId?: string;
   alertType?: string | null;
@@ -238,7 +238,7 @@ interface EquipmentAlertDto {
   propertyName?: string | null;
 }
 
-interface AlertsResponse {
+export interface AlertsResponse {
   alerts?: EquipmentAlertDto[] | null;
   totalCount?: number;
   activeCount?: number;
@@ -253,7 +253,7 @@ interface AlertsResponse {
 // Metric Types (from Swagger)
 // ============================================
 
-interface MetricValueDto {
+export interface MetricValueDto {
   metricType?: string | null;
   value?: number;
   unit?: string | null;
@@ -261,13 +261,13 @@ interface MetricValueDto {
   status?: string | null;
 }
 
-interface MetricHistoryDto {
+export interface MetricHistoryDto {
   metricType?: string | null;
   unit?: string | null;
   values?: MetricDataPoint[] | null;
 }
 
-interface MetricDataPoint {
+export interface MetricDataPoint {
   timestamp?: string;
   value?: number;
 }
@@ -1241,24 +1241,17 @@ export async function checkBackendHealth(): Promise<boolean> {
 export const bmsApi = new BmsApiService();
 export { BmsApiError };
 export type {
-  // Area types
-  AreaDto,
+  // Area types (AreaDto exported at declaration)
   AreaDetailDto,
   CreateAreaRequest,
   UpdateAreaRequest,
-  // Equipment types
-  EquipmentDto,
+  // Equipment types (EquipmentDto exported at declaration)
   EquipmentSummaryDto,
   EquipmentDetailDto,
   CreateEquipmentRequest,
   UpdateEquipmentRequest,
-  // Alert types
-  EquipmentAlertDto,
-  AlertsResponse,
-  // Metric types
-  MetricValueDto,
-  MetricHistoryDto,
-  MetricDataPoint,
+  // Alert types (EquipmentAlertDto, AlertsResponse exported at declaration)
+  // Metric types (MetricValueDto, MetricHistoryDto, MetricDataPoint exported at declaration)
   RecordMetricRequest,
   // Task types
   TaskDto,
