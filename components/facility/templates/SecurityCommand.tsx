@@ -37,7 +37,7 @@ const DETECTION_ICONS: Record<string, React.ReactNode> = {
  */
 export function SecurityCommand({ screenId }: TemplateProps) {
   const { cameras, detections } = securityCommandData;
-  const onlineCount = cameras.filter(c => c.status !== "offline").length;
+  const onlineCount = cameras.filter(c => (c.status as string) !== "offline").length;
   const motionCount = cameras.filter(c => c.hasMotion).length;
 
   return (
@@ -119,8 +119,8 @@ function CameraFeed({ camera }: { camera: SecurityCamera }) {
         {/* Status badges */}
         <div className="absolute top-2 right-2 flex items-center gap-1.5 px-2 py-1 rounded-full bg-black/60 backdrop-blur-sm border border-white/10">
           <div
-            className={`w-2 h-2 rounded-full ${camera.status === "offline" ? "bg-red-500" : "bg-green-500"}`}
-            style={{ boxShadow: camera.status !== "offline" ? "0 0 4px rgba(34,197,94,0.5)" : "none" }}
+            className={`w-2 h-2 rounded-full ${(camera.status as string) === "offline" ? "bg-red-500" : "bg-green-500"}`}
+            style={{ boxShadow: (camera.status as string) !== "offline" ? "0 0 4px rgba(34,197,94,0.5)" : "none" }}
           />
           <span className="text-[10px] text-text-secondary uppercase">{camera.status}</span>
         </div>
