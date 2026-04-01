@@ -34,10 +34,10 @@ export function CampusHealth({ screenId }: TemplateProps) {
 
   return (
     <TemplateShell template="campus-health" screenId={screenId}>
-      <div className="h-full flex flex-col gap-6 p-8">
+      <div className="h-full flex flex-col gap-5 p-5">
 
         {/* ── SECTION 1: INFRASTRUCTURE OVERVIEW (~30%) ── */}
-        <section className="flex-[3] min-h-0 flex flex-col gap-4">
+        <section className="flex-1 min-h-0 flex flex-col gap-3">
           <BlurFade delay={0} duration={500}>
             <SectionLabel>Infrastructure</SectionLabel>
           </BlurFade>
@@ -96,11 +96,11 @@ export function CampusHealth({ screenId }: TemplateProps) {
         </section>
 
         {/* ── SECTION 2: HVAC ZONES (~30%) ── */}
-        <section className="flex-[3] min-h-0 flex flex-col">
+        <section className="flex-[0.5] min-h-0 flex flex-col">
           <BlurFade delay={400} duration={500}>
             <SectionLabel>HVAC — Zone Temperatures</SectionLabel>
           </BlurFade>
-          <div className="flex-1 grid grid-cols-5 gap-4 mt-2">
+          <div className="flex-1 grid grid-cols-5 gap-3 mt-1">
             {hvac.zones.map((zone, i) => (
               <BlurFade key={zone.name} delay={450 + i * 80} duration={400}>
                 <ZoneCard zone={zone} />
@@ -110,14 +110,14 @@ export function CampusHealth({ screenId }: TemplateProps) {
         </section>
 
         {/* ── SECTION 3: TENANT USAGE (~30%) ── */}
-        <section className="flex-[3] min-h-0 flex flex-col">
+        <section className="flex-1 min-h-0 flex flex-col">
           <BlurFade delay={800} duration={500}>
             <div className="flex items-center gap-3">
               <SectionLabel>Energy by Building</SectionLabel>
               <TBDBadge />
             </div>
           </BlurFade>
-          <div className="flex-1 flex flex-col gap-3 mt-2">
+          <div className="flex-1 flex flex-col gap-2 mt-1">
             {tenantUsage.map((tenant, i) => (
               <BlurFade key={tenant.building} delay={850 + i * 80} duration={400}>
                 <TenantRow tenant={tenant} maxConsumption={120} />
@@ -156,10 +156,10 @@ function HeroStat({ icon, label, value, unit, color, badge }: {
 }) {
   return (
     <div
-      className="rounded-2xl border border-white/10 bg-gradient-to-b from-white/[0.04] to-transparent p-6 flex flex-col justify-between"
+      className="rounded-2xl border border-white/10 bg-gradient-to-b from-white/[0.04] to-transparent p-4 flex flex-col justify-between"
       style={{ boxShadow: "inset 0 1px 0 rgba(255,255,255,0.04)" }}
     >
-      <div className="flex items-center justify-between mb-4">
+      <div className="flex items-center justify-between mb-2">
         <span style={{ color, opacity: 0.6 }}>{icon}</span>
         {badge && (
           <span className="text-xs px-2 py-0.5 rounded-full border font-medium"
@@ -169,11 +169,11 @@ function HeroStat({ icon, label, value, unit, color, badge }: {
         )}
       </div>
       <div>
-        <div className="flex items-baseline gap-2">
-          <span className="text-5xl font-bold font-mono leading-none" style={{ color }}>{value}</span>
-          <span className="text-lg text-text-muted">{unit}</span>
+        <div className="flex items-baseline gap-1.5">
+          <span className="text-3xl font-bold font-mono leading-none" style={{ color }}>{value}</span>
+          <span className="text-sm text-text-muted">{unit}</span>
         </div>
-        <p className="text-sm text-text-muted mt-2 font-medium">{label}</p>
+        <p className="text-xs text-text-muted mt-1.5 font-medium">{label}</p>
       </div>
     </div>
   );
@@ -185,10 +185,10 @@ function StatusPanel({ title, items }: {
 }) {
   return (
     <div
-      className="h-full rounded-xl border border-white/10 bg-white/[0.02] p-5 flex flex-col"
+      className="h-full rounded-xl border border-white/10 bg-white/[0.02] p-4 flex flex-col"
       style={{ boxShadow: "inset 0 1px 0 rgba(255,255,255,0.03)" }}
     >
-      <p className="text-xs text-text-muted font-semibold uppercase tracking-wider mb-3">{title}</p>
+      <p className="text-xs text-text-muted font-semibold uppercase tracking-wider mb-2">{title}</p>
       <div className="flex-1 flex flex-col justify-between">
         {items.map((item) => {
           const config = SYSTEM_STATUS_CONFIG[item.status];
@@ -216,7 +216,7 @@ function ZoneCard({ zone }: { zone: { name: string; temperature: number; humidit
 
   return (
     <div
-      className={`h-full rounded-2xl border p-5 flex flex-col justify-between ${
+      className={`h-full rounded-2xl border p-3 flex flex-col justify-between ${
         isWarm ? "border-yellow-500/30 bg-yellow-500/5" : "border-white/10 bg-white/[0.02]"
       }`}
       style={{
@@ -225,19 +225,19 @@ function ZoneCard({ zone }: { zone: { name: string; temperature: number; humidit
           : "inset 0 1px 0 rgba(255,255,255,0.03)",
       }}
     >
-      <p className="text-xs text-text-muted font-semibold mb-3">{zone.name}</p>
+      <p className="text-xs text-text-muted font-semibold mb-2">{zone.name}</p>
 
       {/* Big temperature */}
-      <div className="flex items-center gap-2 mb-4">
-        <Thermometer className="w-5 h-5" style={{ color: tempColor }} />
-        <span className="text-4xl font-bold font-mono leading-none" style={{ color: tempColor }}>
+      <div className="flex items-center gap-1.5 mb-2">
+        <Thermometer className="w-4 h-4" style={{ color: tempColor }} />
+        <span className="text-2xl font-bold font-mono leading-none" style={{ color: tempColor }}>
           {zone.temperature}
         </span>
-        <span className="text-lg text-text-muted">°C</span>
+        <span className="text-sm text-text-muted">°C</span>
       </div>
 
       {/* Details */}
-      <div className="space-y-2 mt-auto">
+      <div className="space-y-1.5 mt-auto">
         <div className="flex justify-between text-xs">
           <span className="text-text-muted">Humidity</span>
           <span className="text-text-secondary font-mono">{zone.humidity}%</span>
@@ -272,12 +272,12 @@ function TenantRow({ tenant, maxConsumption }: { tenant: TenantUsage; maxConsump
 
   return (
     <div
-      className="flex-1 rounded-xl border border-white/10 bg-white/[0.02] px-6 py-4 flex items-center gap-6"
+      className="flex-1 rounded-xl border border-white/10 bg-white/[0.02] px-4 py-2.5 flex items-center gap-4"
       style={{ boxShadow: "inset 0 1px 0 rgba(255,255,255,0.03)" }}
     >
       {/* Building name */}
-      <div className="w-32 flex-shrink-0">
-        <p className="text-base font-semibold text-text-primary">{tenant.building}</p>
+      <div className="w-28 flex-shrink-0">
+        <p className="text-sm font-semibold text-text-primary">{tenant.building}</p>
       </div>
 
       {/* Consumption bar */}
@@ -296,13 +296,13 @@ function TenantRow({ tenant, maxConsumption }: { tenant: TenantUsage; maxConsump
 
       {/* Value */}
       <div className="w-24 text-right">
-        <span className="text-2xl font-bold font-mono text-text-primary">{tenant.consumption}</span>
-        <span className="text-sm text-text-muted ml-1">kW</span>
+        <span className="text-lg font-bold font-mono text-text-primary">{tenant.consumption}</span>
+        <span className="text-xs text-text-muted ml-1">kW</span>
       </div>
 
       {/* Share */}
       <div className="w-16 text-right">
-        <span className="text-lg font-mono text-accent-secondary">{tenant.percentage}%</span>
+        <span className="text-sm font-mono text-accent-secondary">{tenant.percentage}%</span>
       </div>
 
       {/* Trend */}

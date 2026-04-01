@@ -4,9 +4,6 @@ export * from "./bms";
 // Facility display system types
 export * from "./facility";
 
-// LinkedIn types
-export * from "./linkedin";
-
 // UI/Component types
 export interface PersonalDetail {
   label: string;

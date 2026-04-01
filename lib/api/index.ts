@@ -7,7 +7,7 @@ export {
   projectsService,
   departmentsService,
   companiesService,
-  linkedinService,
+
 } from "./services";
 
 // Re-export types from @/types for convenience
@@ -17,7 +17,7 @@ export type {
   ProjectStatus,
   Department,
   Company,
-  LinkedInPost,
+
   PaginatedResponse,
   PaginationParams,
 } from "@/types";

@@ -19,14 +19,14 @@ export const LAYOUT_HEIGHTS = {
   header: 8,
   personalInfo: 12,
   projects: 25,
-  linkedInFeed: 25,
+
   mapView: 30,
 } as const;
 
 // Refresh Intervals (milliseconds)
 export const REFRESH_INTERVALS = {
   clock: 1000,           // 1 second
-  linkedIn: 10000,       // 10 seconds (carousel rotation)
+  carousel: 10000,       // 10 seconds (carousel rotation)
   projects: 60000,       // 1 minute
 } as const;
 

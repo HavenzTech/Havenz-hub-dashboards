@@ -37,7 +37,7 @@ export function RevenueMargin({ screenId }: TemplateProps) {
           <div className="grid grid-cols-3 gap-4">
             {/* Revenue Today — big featured card */}
             <div
-              className="rounded-2xl border border-green-500/30 bg-gradient-to-b from-green-500/[0.06] to-transparent p-7"
+              className="rounded-2xl border border-green-500/30 bg-gradient-to-b from-green-500/[0.06] to-transparent p-4 overflow-hidden"
               style={{ boxShadow: "0 0 30px rgba(34,197,94,0.06), inset 0 1px 0 rgba(255,255,255,0.05)" }}
             >
               <div className="flex items-center gap-2 mb-3">
@@ -45,34 +45,34 @@ export function RevenueMargin({ screenId }: TemplateProps) {
                 <p className="text-xs text-text-muted uppercase tracking-wider">Revenue Today</p>
               </div>
               <div className="flex items-baseline gap-2">
-                <span className="text-6xl font-bold font-mono text-green-400 leading-none">
+                <span className="text-3xl font-bold font-mono text-green-400 leading-none">
                   ${d.revenueToday.toLocaleString()}
                 </span>
               </div>
             </div>
 
             {/* Revenue This Month */}
-            <div className="rounded-2xl border border-white/10 bg-gradient-to-b from-white/[0.04] to-transparent p-7"
+            <div className="rounded-2xl border border-white/10 bg-gradient-to-b from-white/[0.04] to-transparent p-4 overflow-hidden"
               style={{ boxShadow: "inset 0 1px 0 rgba(255,255,255,0.04)" }}>
               <div className="flex items-center gap-2 mb-3">
                 <CircleDollarSign className="w-6 h-6 text-accent-secondary/60" />
                 <p className="text-xs text-text-muted uppercase tracking-wider">This Month</p>
               </div>
-              <span className="text-5xl font-bold font-mono text-text-primary leading-none">
+              <span className="text-3xl font-bold font-mono text-text-primary leading-none">
                 ${(d.revenueMonth / 1000).toFixed(1)}k
               </span>
             </div>
 
             {/* Margin */}
             <div
-              className="rounded-2xl border border-accent-primary/30 bg-gradient-to-b from-accent-primary/[0.06] to-transparent p-7 flex flex-col justify-between"
+              className="rounded-2xl border border-accent-primary/30 bg-gradient-to-b from-accent-primary/[0.06] to-transparent p-4 flex flex-col justify-between overflow-hidden"
               style={{ boxShadow: "0 0 25px rgba(0,212,170,0.06), inset 0 1px 0 rgba(255,255,255,0.05)" }}
             >
               <div className="flex items-center gap-2 mb-3">
                 <PiggyBank className="w-6 h-6 text-accent-primary" />
                 <p className="text-xs text-text-muted uppercase tracking-wider">Operating Margin</p>
               </div>
-              <span className="text-6xl font-bold font-mono text-accent-primary leading-none">
+              <span className="text-3xl font-bold font-mono text-accent-primary leading-none">
                 {d.marginPercent}%
               </span>
               <p className="text-sm text-text-muted mt-2 font-mono">${d.marginPerMWh}/MWh</p>

@@ -72,10 +72,10 @@ export function ExternalIntel({ screenId }: TemplateProps) {
                 className="col-span-1 h-full rounded-2xl border border-blue-500/20 bg-gradient-to-b from-blue-500/[0.06] to-transparent p-6 flex flex-col items-center justify-center"
                 style={{ boxShadow: "0 0 25px rgba(59,130,246,0.06), inset 0 1px 0 rgba(255,255,255,0.05)" }}
               >
-                <span className="text-5xl mb-2">{weather.current.icon}</span>
-                <span className="text-5xl font-bold font-mono text-text-primary leading-none">{weather.current.temp}°C</span>
+                <span className="text-4xl mb-2">{weather.current.icon}</span>
+                <span className="text-3xl font-bold font-mono text-text-primary leading-none">{weather.current.temp}°C</span>
                 <p className="text-sm text-text-muted mt-2">{weather.current.condition}</p>
-                <div className="flex gap-4 mt-4 text-xs text-text-muted">
+                <div className="flex flex-col gap-1.5 mt-3 text-xs text-text-muted">
                   <span className="flex items-center gap-1"><Wind className="w-3 h-3" />{weather.current.wind} km/h</span>
                   <span className="flex items-center gap-1"><Droplets className="w-3 h-3" />{weather.current.humidity}%</span>
                 </div>
