@@ -41,7 +41,7 @@ export function OperationsMaintenance({ screenId }: TemplateProps) {
   const { staff, tasks, maintenanceWindows, spareParts, alerts } = operationsMaintenanceData;
 
   const overdueTasks = tasks.filter(t => t.status === "overdue");
-  const activeTasks = tasks.filter(t => t.status !== "completed");
+  const activeTasks = tasks.filter(t => (t.status as string) !== "completed");
   const unresolvedAlerts = alerts.filter(a => !a.resolved);
 
   return (
