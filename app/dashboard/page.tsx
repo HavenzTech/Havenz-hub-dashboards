@@ -3,76 +3,17 @@
 import { useMemo, useState, useEffect } from "react";
 import { ProfileSection } from "@/components/widgets/ProfileSection";
 import { ProjectsGrid } from "@/components/widgets/ProjectsGrid";
-import { LinkedInFeed } from "@/components/widgets/LinkedInFeed";
+
 import { CompaniesList } from "@/components/widgets/CompaniesList";
 import { BlurFade } from "@/components/ui/BlurFade";
 import { BlurText } from "@/components/ui/BlurText";
-import type { LinkedInPost } from "@/types";
+
 import type { Project } from "@/lib/data/projects";
 import { useCurrentUser } from "@/hooks/useCurrentUser";
 import { useCompanies } from "@/hooks/useCompanies";
 import { useProjects } from "@/hooks/useProjects";
 import { bmsApi } from "@/services/bms-api";
 
-
-const mockLinkedInPosts: LinkedInPost[] = [
-  {
-    id: "1",
-    author: {
-      name: "Sunny",
-      title: "CEO at Havenz",
-      avatarUrl: "/sunny.jpg",
-    },
-    content:
-      "Excited to share our latest project milestone! The heat plant monitoring system is now live and running smoothly. Great teamwork from everyone involved. #Engineering #Innovation",
-    timestamp: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(),
-    likes: 142,
-    comments: 23,
-    shares: 8,
-  },
-  {
-    id: "2",
-    author: {
-      name: "Sunny",
-      title: "CEO at Havenz",
-      avatarUrl: "/sunny.jpg",
-    },
-    content:
-      "Just completed an amazing workshop on React Three Fiber. 3D visualization in web apps has never been easier! Looking forward to implementing these techniques in our upcoming projects.",
-    timestamp: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString(),
-    likes: 89,
-    comments: 15,
-    shares: 5,
-  },
-  {
-    id: "3",
-    author: {
-      name: "Sunny",
-      title: "CEO at Havenz",
-      avatarUrl: "/sunny.jpg",
-    },
-    content:
-      "The future of dashboards is here! Working on a beautiful portrait-mode display for our office. Stay tuned for the reveal. #NextJS #TailwindCSS #WebDev",
-    timestamp: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString(),
-    likes: 215,
-    comments: 42,
-    shares: 18,
-  },
-  {
-    id: "4",
-    author: {
-      name: "Sunny",
-      title: "CEO at Havenz",
-      avatarUrl: "/sunny.jpg",
-    },
-    content:
-      "Grateful for the incredible team at Havenz Tech. Together we're building solutions that make a real difference. Here's to more innovation in 2025!",
-    timestamp: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString(),
-    likes: 178,
-    comments: 31,
-    shares: 12,
-  },
-];
 
 // Helper to format budget
 function formatBudget(amount?: number | null): string {
@@ -177,8 +118,7 @@ export default function DashboardPage() {
     companiesTitle: 100,
     companiesListStart: 300,
     companiesStagger: 100,
-    linkedInFeed: 900,
-    projectsGrid: 1000,
+    projectsGrid: 900,
   };
 
   const isLoading = userLoading || companiesLoading || projectsLoading;
@@ -244,24 +184,14 @@ export default function DashboardPage() {
         </div>
       </section>
 
-      {/* Row 2: LinkedIn + Projects */}
-      <section className="w-full flex gap-8">
-        <div className="w-1/2">
-          <LinkedInFeed
-            posts={mockLinkedInPosts}
-            autoRotate={true}
-            visibleCount={1}
-            baseDelay={ANIMATION_DELAYS.linkedInFeed}
-          />
-        </div>
-        <div className="w-1/2">
-          <ProjectsGrid
-            projects={projectsList}
-            visibleCount={1}
-            autoRotate={true}
-            baseDelay={ANIMATION_DELAYS.projectsGrid}
-          />
-        </div>
+      {/* Row 2: Projects */}
+      <section className="w-full">
+        <ProjectsGrid
+          projects={projectsList}
+          visibleCount={1}
+          autoRotate={true}
+          baseDelay={ANIMATION_DELAYS.projectsGrid}
+        />
       </section>
     </div>
   );

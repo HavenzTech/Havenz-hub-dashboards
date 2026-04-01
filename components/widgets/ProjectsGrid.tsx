@@ -26,7 +26,7 @@ export function ProjectsGrid({
   title = "Projects",
   subtitle,
   autoRotate = true,
-  rotateInterval = REFRESH_INTERVALS.linkedIn,
+  rotateInterval = REFRESH_INTERVALS.carousel,
   baseDelay = 0,
 }: ProjectsGridProps) {
   const [currentIndex, setCurrentIndex] = useState(0);

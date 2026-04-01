@@ -42,33 +42,33 @@ export function PowerMarket({ screenId }: TemplateProps) {
           <div className="grid grid-cols-4 gap-4">
             {/* Pool Price — featured */}
             <div
-              className="col-span-2 rounded-2xl border border-accent-primary/30 bg-gradient-to-b from-accent-primary/[0.06] to-transparent p-6 flex items-center gap-6"
+              className="col-span-2 rounded-2xl border border-accent-primary/30 bg-gradient-to-b from-accent-primary/[0.06] to-transparent p-4 flex items-center gap-4 overflow-hidden"
               style={{ boxShadow: "0 0 30px rgba(0,212,170,0.06), inset 0 1px 0 rgba(255,255,255,0.05)" }}
             >
-              <Zap className="w-10 h-10 text-accent-primary flex-shrink-0" />
+              <Zap className="w-8 h-8 text-accent-primary flex-shrink-0" />
               <div>
                 <p className="text-xs text-text-muted uppercase tracking-wider mb-1">AESO Pool Price</p>
                 <div className="flex items-baseline gap-3">
-                  <span className="text-6xl font-bold font-mono text-accent-primary leading-none">${poolPrice}</span>
-                  <span className="text-lg text-text-muted">/MWh</span>
+                  <span className="text-4xl font-bold font-mono text-accent-primary leading-none">${poolPrice}</span>
+                  <span className="text-sm text-text-muted">/MWh</span>
                 </div>
-              </div>
-              <div className="ml-auto flex items-center gap-2">
-                {priceUp ? <TrendingUp className="w-6 h-6 text-green-400" /> : <TrendingDown className="w-6 h-6 text-red-400" />}
-                <span className={`text-xl font-bold font-mono ${priceUp ? "text-green-400" : "text-red-400"}`}>
-                  {priceUp ? "+" : ""}{poolPriceChange}%
-                </span>
+                <div className="flex items-center gap-1.5 mt-1.5">
+                  {priceUp ? <TrendingUp className="w-4 h-4 text-green-400" /> : <TrendingDown className="w-4 h-4 text-red-400" />}
+                  <span className={`text-sm font-bold font-mono ${priceUp ? "text-green-400" : "text-red-400"}`}>
+                    {priceUp ? "+" : ""}{poolPriceChange}%
+                  </span>
+                </div>
               </div>
             </div>
 
             {/* Demand */}
-            <div className="rounded-2xl border border-white/10 bg-gradient-to-b from-white/[0.04] to-transparent p-6 flex flex-col justify-between"
+            <div className="rounded-2xl border border-white/10 bg-gradient-to-b from-white/[0.04] to-transparent p-4 flex flex-col justify-between overflow-hidden"
               style={{ boxShadow: "inset 0 1px 0 rgba(255,255,255,0.04)" }}>
               <div className="flex items-center gap-2 mb-2">
-                <Gauge className="w-5 h-5 text-accent-secondary/60" />
+                <Gauge className="w-5 h-5 text-accent-secondary/60 flex-shrink-0" />
                 <p className="text-xs text-text-muted uppercase tracking-wider">System Demand</p>
               </div>
-              <span className="text-4xl font-bold font-mono text-text-primary">{demandMW.toLocaleString()}</span>
+              <span className="text-3xl font-bold font-mono text-text-primary">{demandMW.toLocaleString()}</span>
               <div className="flex items-center justify-between mt-2">
                 <span className="text-xs text-text-muted">of {demandCapacityMW.toLocaleString()} MW</span>
                 <span className={`text-sm font-bold font-mono ${demandPercent > 85 ? "text-yellow-400" : "text-text-secondary"}`}>{demandPercent}%</span>
@@ -82,20 +82,22 @@ export function PowerMarket({ screenId }: TemplateProps) {
             </div>
 
             {/* Day-ahead + Volatility */}
-            <div className="rounded-2xl border border-white/10 bg-gradient-to-b from-white/[0.04] to-transparent p-6 flex flex-col justify-between"
+            <div className="rounded-2xl border border-white/10 bg-gradient-to-b from-white/[0.04] to-transparent p-4 flex flex-col justify-between overflow-hidden"
               style={{ boxShadow: "inset 0 1px 0 rgba(255,255,255,0.04)" }}>
               <div>
                 <div className="flex items-center gap-2 mb-2">
-                  <BarChart3 className="w-5 h-5 text-accent-secondary/60" />
+                  <BarChart3 className="w-5 h-5 text-accent-secondary/60 flex-shrink-0" />
                   <p className="text-xs text-text-muted uppercase tracking-wider">Day-Ahead Avg</p>
                 </div>
-                <span className="text-3xl font-bold font-mono text-text-primary">${dayAheadAvg}</span>
+                <span className="text-2xl font-bold font-mono text-text-primary">${dayAheadAvg}</span>
                 <span className="text-sm text-text-muted ml-1">/MWh</span>
               </div>
-              <div className="mt-3 flex items-center gap-2">
-                <Radio className="w-4 h-4 text-text-muted/40" />
-                <span className="text-xs text-text-muted">Volatility:</span>
-                <span className={`text-xs font-bold ${volatility === "high" ? "text-red-400" : volatility === "moderate" ? "text-yellow-400" : "text-green-400"}`}>
+              <div className="mt-3">
+                <div className="flex items-center gap-1.5">
+                  <Radio className="w-3.5 h-3.5 text-text-muted/40 flex-shrink-0" />
+                  <span className="text-xs text-text-muted">Volatility</span>
+                </div>
+                <span className={`text-xs font-bold ml-5 ${volatility === "high" ? "text-red-400" : volatility === "moderate" ? "text-yellow-400" : "text-green-400"}`}>
                   {volatility.toUpperCase()}
                 </span>
               </div>

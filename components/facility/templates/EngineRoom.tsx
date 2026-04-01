@@ -39,12 +39,12 @@ export function EngineRoom({ screenId }: TemplateProps) {
 
   return (
     <TemplateShell template="engine-room" screenId={screenId}>
-      <div className="h-full flex flex-col gap-5 p-8">
+      <div className="h-full flex flex-col gap-3 p-5">
         {/* ENGINE STATUS */}
         <section className="flex-shrink-0">
           <BlurFade delay={0} duration={600}>
             <SectionLabel>Engine Status</SectionLabel>
-            <div className="grid grid-cols-2 gap-5">
+            <div className="grid grid-cols-2 gap-4">
               {engines.map((engine, i) => (
                 <BlurFade key={engine.id} delay={100 + i * 150} duration={500}>
                   <EngineStatusCard engine={engine} />
@@ -59,11 +59,11 @@ export function EngineRoom({ screenId }: TemplateProps) {
           <BlurFade delay={300} duration={600}>
             <SectionLabel>Performance Metrics</SectionLabel>
           </BlurFade>
-          <div className="flex-1 flex flex-col gap-5">
+          <div className="flex-1 flex flex-col gap-3">
             {engines.map((engine, ei) => (
               <div key={engine.id} className="flex-1 flex flex-col">
                 <BlurFade delay={400 + ei * 100} duration={500}>
-                  <p className="text-base text-text-secondary mb-3 font-semibold tracking-wide flex items-center gap-2">
+                  <p className="text-sm text-text-secondary mb-2 font-semibold tracking-wide flex items-center gap-2">
                     <CircleDot className={`w-4 h-4 ${engine.status === "running" ? "text-green-400" : "text-text-muted"}`} />
                     {engine.name}
                   </p>
@@ -103,7 +103,7 @@ export function EngineRoom({ screenId }: TemplateProps) {
         </section>
 
         {/* CAMERAS */}
-        <section className="flex-[2] min-h-0 flex flex-col">
+        <section className="flex-[1.5] min-h-0 flex flex-col">
           <BlurFade delay={1000} duration={600}>
             <SectionLabel>Live Cameras</SectionLabel>
           </BlurFade>
@@ -117,11 +117,11 @@ export function EngineRoom({ screenId }: TemplateProps) {
         </section>
 
         {/* AI PREDICTIVE ALERTS */}
-        <section className="flex-[1.5] min-h-0 flex flex-col">
+        <section className="flex-shrink-0">
           <BlurFade delay={1300} duration={600}>
             <SectionLabel>AI Predictive Alerts</SectionLabel>
           </BlurFade>
-          <div className="flex-1 flex flex-col gap-3">
+          <div className="grid grid-cols-3 gap-3">
             {predictiveAlerts.map((alert, i) => (
               <BlurFade key={alert.id} delay={1400 + i * 120} duration={400}>
                 <AlertRow alert={alert} />
@@ -200,7 +200,7 @@ function getMetrics(engine: MockEngine): MetricDef[] {
 
 function SectionLabel({ children }: { children: React.ReactNode }) {
   return (
-    <h2 className="text-sm font-bold uppercase tracking-[0.2em] text-accent-primary/70 mb-4">
+    <h2 className="text-sm font-bold uppercase tracking-[0.2em] text-accent-primary/70 mb-2">
       {children}
     </h2>
   );
@@ -213,7 +213,7 @@ function EngineStatusCard({ engine }: { engine: MockEngine }) {
 
   return (
     <div
-      className={`relative rounded-2xl border-2 p-6 backdrop-blur-sm transition-all ${config.bgColor}`}
+      className={`relative rounded-2xl border-2 p-4 backdrop-blur-sm transition-all ${config.bgColor}`}
       style={{
         boxShadow: isRunning
           ? "0 0 20px rgba(34, 197, 94, 0.1), inset 0 1px 0 rgba(255,255,255,0.05)"
@@ -222,8 +222,8 @@ function EngineStatusCard({ engine }: { engine: MockEngine }) {
             : "inset 0 1px 0 rgba(255,255,255,0.05)",
       }}
     >
-      <div className="flex items-center justify-between mb-3">
-        <span className="text-2xl font-bold text-text-primary">{engine.name}</span>
+      <div className="flex items-center justify-between mb-2">
+        <span className="text-xl font-bold text-text-primary">{engine.name}</span>
         <div className="flex items-center gap-3">
           <div
             className={`w-4 h-4 rounded-full ${config.dotColor}`}
@@ -232,11 +232,11 @@ function EngineStatusCard({ engine }: { engine: MockEngine }) {
               animation: isRunning ? "pulse 2s ease-in-out infinite" : "none",
             }}
           />
-          <span className={`text-xl font-black tracking-wide ${config.color}`}>{config.label}</span>
+          <span className={`text-lg font-black tracking-wide ${config.color}`}>{config.label}</span>
         </div>
       </div>
       {isRunning && (
-        <div className="flex gap-6 text-lg text-text-secondary">
+        <div className="flex gap-6 text-base text-text-secondary">
           <span className="font-mono">{engine.metrics.rpm} <span className="text-sm text-text-muted">RPM</span></span>
           <span className="font-mono">{engine.metrics.loadFactor}% <span className="text-sm text-text-muted">Load</span></span>
           <span className="font-mono">{engine.metrics.temperature}°C</span>
@@ -281,7 +281,7 @@ function MetricCard({
 
   return (
     <div
-      className={`h-full rounded-xl border bg-gradient-to-b from-white/[0.04] to-transparent p-5 flex flex-col justify-center transition-colors ${borderGlow[status]}`}
+      className={`h-full rounded-xl border bg-gradient-to-b from-white/[0.04] to-transparent p-3 flex flex-col justify-center transition-colors ${borderGlow[status]}`}
       style={{
         boxShadow: status === "warning"
           ? "0 0 15px rgba(245, 158, 11, 0.05)"
@@ -290,15 +290,15 @@ function MetricCard({
             : "inset 0 1px 0 rgba(255,255,255,0.03)",
       }}
     >
-      <div className="flex items-center gap-2 mb-3">
+      <div className="flex items-center gap-2 mb-2">
         <span className={iconColors[status]}>{icon}</span>
-        <p className="text-sm text-text-muted font-medium">{label}</p>
+        <p className="text-xs text-text-muted font-medium">{label}</p>
       </div>
-      <div className="flex items-baseline gap-2">
-        <span className={`text-4xl font-bold font-mono leading-none ${valueColors[status]}`}>
+      <div className="flex items-baseline gap-1.5">
+        <span className={`text-2xl font-bold font-mono leading-none ${valueColors[status]}`}>
           {value}
         </span>
-        {unit && <span className="text-base text-text-muted">{unit}</span>}
+        {unit && <span className="text-sm text-text-muted">{unit}</span>}
       </div>
     </div>
   );
@@ -319,18 +319,18 @@ function FuelCard({
 }) {
   return (
     <div
-      className="rounded-xl border border-white/10 bg-gradient-to-b from-white/[0.04] to-transparent p-6 flex flex-col justify-center"
+      className="rounded-xl border border-white/10 bg-gradient-to-b from-white/[0.04] to-transparent p-4 flex flex-col justify-center"
       style={{ boxShadow: "inset 0 1px 0 rgba(255,255,255,0.03)" }}
     >
-      <div className="flex items-center gap-2 mb-3">
+      <div className="flex items-center gap-2 mb-2">
         {icon}
-        <p className="text-sm text-text-muted font-medium">{label}</p>
+        <p className="text-xs text-text-muted font-medium">{label}</p>
       </div>
-      <div className="flex items-baseline gap-2">
-        <span className={`text-4xl font-bold font-mono leading-none ${accent ? "text-accent-primary" : "text-text-primary"}`}>
+      <div className="flex items-baseline gap-1.5">
+        <span className={`text-2xl font-bold font-mono leading-none ${accent ? "text-accent-primary" : "text-text-primary"}`}>
           {value}
         </span>
-        <span className="text-base text-text-muted">{unit}</span>
+        <span className="text-sm text-text-muted">{unit}</span>
       </div>
     </div>
   );
@@ -365,9 +365,9 @@ function CameraCard({ camera }: { camera: MockCamera }) {
         </div>
       </div>
       {/* Label */}
-      <div className="flex-shrink-0 px-5 py-3 border-t border-white/5 bg-white/[0.02]">
-        <p className="text-lg text-text-primary font-semibold">{camera.name}</p>
-        <p className="text-sm text-text-muted">{camera.location}</p>
+      <div className="flex-shrink-0 px-4 py-2 border-t border-white/5 bg-white/[0.02]">
+        <p className="text-base text-text-primary font-semibold">{camera.name}</p>
+        <p className="text-xs text-text-muted">{camera.location}</p>
       </div>
     </div>
   );
@@ -383,7 +383,7 @@ function AlertRow({ alert }: { alert: MockPredictiveAlert }) {
 
   return (
     <div
-      className={`flex-1 rounded-xl border px-6 py-4 flex items-center gap-4 backdrop-blur-sm ${config.bgColor}`}
+      className={`rounded-xl border px-4 py-3 backdrop-blur-sm ${config.bgColor}`}
       style={{
         boxShadow: alert.severity === "critical"
           ? "0 0 15px rgba(239, 68, 68, 0.08)"
@@ -392,15 +392,13 @@ function AlertRow({ alert }: { alert: MockPredictiveAlert }) {
             : "none",
       }}
     >
-      <AlertIcon className={`w-5 h-5 flex-shrink-0 ${config.color}`} />
-      <div className="flex-1 min-w-0">
-        <div className="flex items-center gap-3 mb-1">
-          <span className={`text-base font-bold ${config.color}`}>{alert.type}</span>
-          <span className="text-sm text-text-muted font-mono">{alert.confidence}%</span>
-        </div>
-        <p className="text-base text-text-secondary">{alert.message}</p>
+      <div className="flex items-center gap-2 mb-1.5">
+        <AlertIcon className={`w-4 h-4 flex-shrink-0 ${config.color}`} />
+        <span className={`text-sm font-bold ${config.color}`}>{alert.type}</span>
+        <span className="text-xs text-text-muted font-mono ml-auto">{alert.confidence}%</span>
       </div>
-      <span className="text-sm text-text-muted whitespace-nowrap font-mono">{timeAgo}</span>
+      <p className="text-xs text-text-secondary line-clamp-2 mb-1.5">{alert.message}</p>
+      <span className="text-xs text-text-muted font-mono">{timeAgo}</span>
     </div>
   );
 }
